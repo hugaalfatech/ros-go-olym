@@ -1,0 +1,5 @@
+# SEAL LOG - APPEND ONLY
+# Object: append-only-registry-rule
+# Domain: rule
+
+v1.0 | 2025-02-23T08:40:00Z | SHA256:{{to_be_computed}} | LOCKED

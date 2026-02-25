@@ -1,0 +1,5 @@
+# SEAL LOG - APPEND ONLY
+# Object: registry-freeze-protocol
+# Domain: protocol
+
+v1.0 | 2025-02-23T08:45:00Z | SHA256:{{to_be_computed}} | LOCKED

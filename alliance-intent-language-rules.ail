@@ -1,0 +1,915 @@
+# ALLIANCE INTENT LANGUAGE RULES v3.1.8
+## Quy tắc AIL - Hybrid Intent Protocol với Deterministic Embedding
+
+```yaml
+# HEADER
+header:
+  id: RC://olympia.ail-rules.v1
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+  
+metadata:
+  fractal_name: "ros.olympia.ail.rules"
+  lazy_type: "language_specification"
+  version: "3.1.8"
+  era: "5-CAFE"
+  seal_date: "2025-02-23"
+  hash_anchor: "{{to_be_sealed}}"
+  
+dependencies:
+  constitution:
+    - "ros-charter.clo"
+    - "core-four-governance.clo"
+  rule:
+    - "append-only-registry-rule.clo"
+  protocol:
+    - "alue-seal-protocol.clo"
+```
+
+---
+
+## 🎯 TRIẾT LÝ CỐT LÕI
+
+### AIL là "Giao thức Ý chí"
+
+```yaml
+philosophy:
+  definition: "Alliance Intent Language - Giao thức ý chí thống nhất HI↔AIA"
+  
+  core_principles:
+    - name: "Hybrid Structure"
+      value: "Markdown (Human readable) + YAML (AIA structured)"
+      
+    - name: "Language Policy"
+      value: "85% địa phương (VI) + 15% technical English"
+      ratio: "85:15"
+      
+    - name: "Multi-modal Support"
+      value: "Voice, video, m3d, artifact embedding"
+      
+    - name: "Intent-driven"
+      value: "Mọi file phải khai báo intent rõ ràng"
+```
+
+---
+
+## 📂 HỆ THỐNG ĐỊNH DẠNG FILE (INTENT TRIO)
+
+### The Three States
+
+```yaml
+file_formats:
+  ail:
+    name: "Editable Intent"
+    extension: ".ail"
+    structure: "Markdown + YAML text"
+    sealed: false
+    purpose: "Soạn thảo, thảo luận HI↔AIA"
+    mutability: "EDITABLE"
+    
+  sio:
+    name: "Structured Intent Object"
+    extension: ".sio"
+    structure: "Folder bundle (ZIP-like)"
+    sealed: true
+    purpose: "Lưu trữ dự án, artifact bundles, trao đổi hệ thống"
+    mutability: "SEALED"
+    
+  pid:
+    name: "Portable Intent Document"
+    extension: ".pid"
+    structure: "Single file (PDF-like layout)"
+    sealed: true
+    purpose: "Xuất bản, hồ sơ pháp lý/kỹ thuật cuối cùng"
+    mutability: "IMMUTABLE"
+```
+
+---
+
+## 📐 CẤU TRÚC AIL CHUẨN
+
+### Standard Layout
+
+```yaml
+ail_structure:
+  required_blocks:
+    1:
+      name: "Header Block"
+      format: "YAML"
+      position: "Top of file"
+      required_fields:
+        - id: "SMF://<domain>.<entity>.v1"
+        - version: "3.1.8"
+        - intent: "DECLARE_SCHEMA | EXECUTE_LOGIC | RENDER_EXPERIENCE"
+        - status: "ACTIVE | DRAFT | LOCKED | DEPRECATED"
+        - locale: "vi-85 | zh-85 | ar-85 | en-100"
+    
+    2:
+      name: "Narrative Block"
+      format: "Markdown"
+      language: "85% local language"
+      purpose: "Context và business logic giải thích"
+      
+    3:
+      name: "Technical Block"
+      format: "AIL/YAML"
+      language: "100% English keys, localized labels"
+      purpose: "Schema, fields, logic definition"
+  
+  optional_blocks:
+    guide:
+      name: "Guide Block"
+      format: "Markdown/YAML"
+      purpose: "Chỉ dẫn cho từng Engine (Coditor, Colator, Cogen)"
+      
+    translation:
+      name: "Translation Block"
+      format: "YAML"
+      purpose: "Multi-language mapping"
+      
+    embedding:
+      name: "Embedding Block"
+      format: "CBOR/Binary/Base64"
+      purpose: "Nhúng artifact nguyên thủy"
+```
+
+---
+
+## 🔤 QUY ĐỊNH NGÔN NGỮ KỸ THUẬT
+
+### English-Core Enforcement
+
+```yaml
+language_rules:
+  machine_structure:
+    language: "100% English (US spelling)"
+    applies_to:
+      - "Keywords (header, entity, fields, hooks)"
+      - "Field names (snake_case)"
+      - "Data types (string, integer, float)"
+      - "Intents (DECLARE_SCHEMA, EXECUTE_LOGIC)"
+    
+    us_spelling:
+      - "color (not colour)"
+      - "initialize (not initialise)"
+      - "center (not centre)"
+  
+  human_intent:
+    language: "85% local language"
+    applies_to:
+      - "Narrative blocks"
+      - "Comments"
+      - "Labels (UI-facing)"
+      - "Help text"
+  
+  example:
+    correct: |
+      entity:
+        name: PaymentTransaction      # English
+        fields:
+          transaction_id:             # English snake_case
+            type: string              # English type
+            label: "Mã giao dịch"     # Vietnamese label
+    
+    incorrect: |
+      entity:
+        name: GiaoDichThanhToan       # ❌ Vietnamese in structure
+        fields:
+          ma_giao_dich:               # ❌ Vietnamese field name
+            type: chuoi               # ❌ Vietnamese type
+```
+
+---
+
+## 📊 MAPPING TO OBSOLETE (MTO)
+
+### Terminology Mapping
+
+```yaml
+mto:
+  purpose: "Khóa ý nghĩa để AIA không hiểu sai"
+  required_in: "Mọi tài liệu AIL"
+  
+  standard_mappings:
+    governance:
+      vi: "Thẩm quyền"
+      en: "Authority"
+      context: "Governance & Security"
+      
+    data:
+      vi: "Thực thể"
+      en: "Entity"
+      context: "Data Modeling"
+      
+    logic:
+      vi: "Điểm mốc"
+      en: "Hook"
+      context: "Logic Trigger"
+      
+    crypto:
+      vi: "Bằng chứng"
+      en: "Proof"
+      context: "Cryptography/Ledger"
+      
+    integrity:
+      vi: "Niêm phong"
+      en: "Seal/Sealed"
+      context: "Artifact Integrity"
+```
+
+---
+
+## 🔗 DETERMINISTIC EMBEDDING RULES (NEW REFINEMENT)
+
+### CRD Audit Refinements
+
+```yaml
+origin_integrity:
+  required: true
+  fields:
+    source_type:
+      enum: ["local", "poly-ledger", "remote"]
+    source_hash: "SHA256"
+    canonicalization:
+      enum: ["rfc_8785", "rfc_8949_deterministic", "rust_norm_v1"]
+  
+  validation:
+    rule: "Loader MUST verify origin before trust"
+    action_on_missing: "REJECT"
+
+embedding_constraints:
+  authority_boundary:
+    allow_in_domains:
+      - "spec"
+      - "blueprint"
+      - "engine"
+      - "protocol"
+      - "rule"
+    forbid_in_domains:
+      - "constitution"
+    
+    constitution_rule:
+      inline_embedding: false
+      hash_reference: true
+      reason: "Constitution không được chứa executable binary"
+
+rust_norm_v1:
+  specification:
+    newline: "LF"
+    trim_trailing_space: true
+    ensure_trailing_newline: true
+    remove_doc_hidden: false
+    tab_policy: "preserve"
+  
+  reproducibility:
+    guarantee: "Same source → same hash"
+    test: "rustfmt --check + sha256sum"
+
+hash_standard:
+  primary: "SHA256"
+  bundle_merkle: "SHA256"
+  future_upgrade:
+    authority: "seal-integrity-law.clo only"
+    forbidden: "Arbitrary hash function change"
+
+ordering_scope:
+  yaml_keys: "ascii_lexicographic"
+  manifest_entries: "stable_sorted"
+  merkle_leaves: "index_sorted"
+  locale: "C (POSIX) - không locale-dependent"
+```
+
+### Embedding Primitives
+
+```yaml
+embedding_protocol:
+  purpose: "Nhúng artifact nguyên thủy vào .ail/.sio với deterministic guarantee"
+  
+  primitive_classes:
+    canonical_data:
+      - "json_rfc_8785"
+      - "cbor_rfc_8949_deterministic"
+    source_code:
+      - "rust_normalized"
+    binary_blob:
+      - "image_prehashed"
+  
+  supported_formats:
+    cbor:
+      mime_type: "application/cbor"
+      encoding: "raw binary OR base64"
+      deterministic: true
+      use_case: "Structured data với canonical serialization"
+      canonicalization: "rfc_8949_deterministic"
+      
+    rust:
+      mime_type: "text/x-rust"
+      encoding: "utf-8 text"
+      deterministic: true
+      use_case: "Macro code, RFN implementation"
+      hash_strategy: "Normalize whitespace before hash"
+      
+    json:
+      mime_type: "application/json"
+      encoding: "utf-8 text"
+      deterministic: "Requires canonical JSON"
+      use_case: "Configuration, API schema"
+      canonicalization: "RFC 8785 (JCS)"
+      
+    image:
+      mime_type: "image/jpeg | image/png"
+      encoding: "base64"
+      deterministic: true
+      use_case: "Diagrams, screenshots, proofs"
+      hash_strategy: "Hash before base64 encode"
+```
+
+---
+
+## 📦 EMBEDDING METHODS
+
+### Three Embedding Strategies
+
+```yaml
+embedding_methods:
+  inline:
+    name: "Inline Embedding"
+    when: "Small artifacts (< 100KB)"
+    format: "base64 trong YAML block"
+    deterministic: "YES - content hashed directly"
+    
+    example: |
+      artifact:
+        type: "image/jpeg"
+        encoding: "base64"
+        hash: "SHA256:abc123..."
+        data: "iVBORw0KGgoAAAANSUhEUgAA..."
+  
+  reference:
+    name: "Hash Reference"
+    when: "Large artifacts (> 100KB)"
+    format: "Hash pointer + external storage"
+    deterministic: "YES - hash anchored"
+    
+    example: |
+      artifact:
+        type: "application/cbor"
+        hash: "SHA256:def456..."
+        location: "poly-ledger://artifact/def456"
+        size: 2048576
+  
+  bundle:
+    name: "Bundle Embedding (.sio)"
+    when: "Multiple related artifacts"
+    format: "Folder structure in ZIP-like container"
+    deterministic: "YES - manifest với ordered list"
+    
+    example: |
+      manifest.ail:
+        artifacts:
+          - name: "schema.cbor"
+            hash: "SHA256:abc..."
+          - name: "macro.rs"
+            hash: "SHA256:def..."
+          - name: "diagram.jpg"
+            hash: "SHA256:ghi..."
+```
+
+---
+
+## 🔐 DETERMINISTIC GUARANTEE RULES
+
+### Ensuring Determinism
+
+```yaml
+deterministic_rules:
+  canonical_ordering:
+    rule: "Tất cả list phải có thứ tự xác định"
+    method: "Lexicographic sort by key/filename"
+    example:
+      before: "[c.rs, a.rs, b.rs]"
+      after: "[a.rs, b.rs, c.rs]"
+  
+  whitespace_normalization:
+    rule: "Text artifacts phải normalize whitespace"
+    applies_to: ["*.rs", "*.ail", "*.json"]
+    method: "Trim trailing, normalize newlines to LF"
+    
+  json_canonicalization:
+    rule: "JSON phải canonical trước khi hash"
+    standard: "RFC 8785 (JSON Canonicalization Scheme)"
+    library: "canonicaljson-rs"
+    
+  cbor_deterministic:
+    rule: "CBOR phải dùng deterministic encoding"
+    standard: "RFC 8949 Section 4.2"
+    library: "ciborium with canonical flag"
+    
+  image_hash:
+    rule: "Image hash trước khi encode base64"
+    flow: "binary → SHA256 → store hash → base64 encode"
+    reason: "Base64 có thể có padding variants"
+```
+
+---
+
+## 📋 EMBEDDING BLOCK SYNTAX
+
+### Standard Embedding Block
+
+```yaml
+embedding_syntax:
+  inline_example: |
+    ```ail
+    embeddings:
+      diagram:
+        id: "authority-boundary-diagram"
+        type: "image/png"
+        encoding: "base64"
+        hash: "SHA256:abc123def456..."
+        origin:
+          source_type: "local"
+          source_hash: "SHA256:abc123def456..."
+          canonicalization: "prehashed"
+        timestamp: "2025-02-23T08:00:00Z"
+        data: |
+          iVBORw0KGgoAAAANSUhEUgAAAAUA
+          AAAFCAYAAACNbyblAAAAHElEQVQI
+          12P4//8/w38GIAXDIBKE0DHxgljN
+          BAAqqQGAAAD//8yvnQAAAABJRU5E
+          rkJggg==
+    ```
+  
+  reference_example: |
+    ```ail
+    embeddings:
+      macro_code:
+        id: "override-precedence-macro"
+        type: "text/x-rust"
+        hash: "SHA256:def456ghi789..."
+        origin:
+          source_type: "poly-ledger"
+          source_hash: "SHA256:def456ghi789..."
+          canonicalization: "rust_norm_v1"
+        location: "poly-ledger://code/def456ghi789"
+        size: 4096
+        metadata:
+          compiled_at: "2025-02-23T08:30:00Z"
+          compiler_version: "rustc 1.75.0"
+    ```
+  
+  bundle_example: |
+    ```ail
+    bundle:
+      manifest_version: "1.0"
+      artifacts:
+        - id: "schema"
+          filename: "payment-schema.cbor"
+          hash: "SHA256:abc..."
+          
+        - id: "implementation"
+          filename: "payment-logic.rs"
+          hash: "SHA256:def..."
+          
+        - id: "test_data"
+          filename: "fixtures.json"
+          hash: "SHA256:ghi..."
+      
+      integrity_proof:
+        method: "Merkle Tree"
+        root_hash: "SHA256:xyz..."
+    ```
+```
+
+---
+
+## 🧬 EMBEDDING IN .sio BUNDLES
+
+### .sio Structure
+
+```yaml
+sio_structure:
+  format: "ZIP-like container"
+  
+  required_files:
+    manifest:
+      filename: "manifest.ail"
+      purpose: "List of all artifacts với hash"
+      
+    seal:
+      filename: "seal.log"
+      purpose: "Signature và timestamp"
+  
+  artifact_layout:
+    example: |
+      payment-module.sio/
+      ├── manifest.ail
+      ├── seal.log
+      ├── artifacts/
+      │   ├── schema.cbor
+      │   ├── logic.rs
+      │   ├── test.json
+      │   └── diagram.jpg
+      └── metadata/
+          └── build.yaml
+  
+  deterministic_packing:
+    rule: "Files phải packed theo thứ tự lexicographic"
+    compression: "Store only (no compression) OR deterministic gzip"
+    timestamp: "Normalized to UTC, zero out filesystem metadata"
+```
+
+---
+
+## 🔍 HASH VERIFICATION FLOW
+
+### Verification Process
+
+```yaml
+verification_flow:
+  step_1:
+    name: "Extract artifact"
+    action: "Read từ .ail embedding OR .sio bundle"
+    
+  step_2:
+    name: "Decode if needed"
+    action: "base64 decode nếu inline embedded"
+    
+  step_3:
+    name: "Canonicalize"
+    action: "Apply normalization rules (whitespace, JSON, CBOR)"
+    
+  step_4:
+    name: "Compute hash"
+    method: "SHA256"
+    
+  step_5:
+    name: "Compare"
+    test: "computed_hash == declared_hash"
+    action_on_match: "TRUST"
+    action_on_mismatch: "REJECT + ALERT"
+```
+
+---
+
+## 🚫 FORBIDDEN EMBEDDING PRACTICES
+
+### Anti-patterns
+
+```yaml
+forbidden:
+  non_deterministic_compression:
+    example: "gzip with default settings (timestamps embedded)"
+    reason: "Khác nhau mỗi lần compress"
+    
+  unsorted_lists:
+    example: "artifacts: [c.rs, a.rs, b.rs]"
+    reason: "Thứ tự không xác định → hash khác"
+    
+  raw_json_without_canonicalization:
+    example: '{"b": 2, "a": 1}'
+    reason: "Key order không đảm bảo → hash khác"
+    
+  filesystem_metadata:
+    example: "ZIP with creation timestamps"
+    reason: "Metadata thay đổi → hash khác"
+    
+  relative_paths:
+    example: "../../../secret.rs"
+    reason: "Path traversal security risk"
+```
+
+---
+
+## ✅ BEST PRACTICES
+
+### Recommended Patterns
+
+```yaml
+best_practices:
+  small_artifacts:
+    size: "< 100KB"
+    method: "Inline embedding với base64"
+    benefit: "Self-contained, easy verification"
+    
+  large_artifacts:
+    size: "> 100KB"
+    method: "Hash reference + poly-ledger storage"
+    benefit: "Giảm kích thước .ail, fast lookup"
+    
+  multiple_artifacts:
+    count: "> 3 related files"
+    method: "Bundle in .sio"
+    benefit: "Atomic versioning, single seal"
+    
+  code_artifacts:
+    type: "*.rs, *.ts, *.py"
+    preprocessing:
+      - "Strip comments (optional, document decision)"
+      - "Normalize whitespace"
+      - "Format with deterministic formatter"
+    
+  binary_artifacts:
+    type: "*.cbor, *.jpg, *.wasm"
+    preprocessing: "None - hash directly"
+    encoding: "base64 for inline, raw for bundle"
+```
+
+---
+
+## 🎯 AIA EXPERT INSTRUCTIONS
+
+### Soul-Binding Rules
+
+```yaml
+aia_instructions:
+  authority:
+    principle: "Chính danh - Quân tử"
+    rule: "Tuyệt đối không vượt quyền HI (Owner)"
+    action: "Alert khi gặp ca khó"
+    
+  lazy_type:
+    rule: "Tuân thủ lazy type protocol"
+    purpose: "Tối ưu hóa tài nguyên xử lý"
+    
+  canonical_order:
+    rule: "Teleport capability theo đúng trình tự"
+    sequence: "EFC → EFA → FEH → Plan → Code → NKC"
+    
+  amo_protocol:
+    rule: "Vendor code là Black-box (AMO wrapper)"
+    restriction: "Không can thiệp nội hàm nếu không có thẩm quyền"
+  
+  embedding_handling:
+    rule: "Khi gặp embedded artifact, verify hash trước khi trust"
+    error_handling: "Hash mismatch → REJECT + alert HI"
+    
+  deterministic_output:
+    rule: "Khi tạo .ail/.sio, đảm bảo canonical ordering"
+    test: "Chạy 2 lần phải cho cùng hash"
+```
+
+---
+
+## 📐 INTEGRATION WITH CLO SYSTEM
+
+### CLO ↔ AIL Relationship
+
+```yaml
+clo_ail_integration:
+  clo_files:
+    format: ".clo (Canon List Object)"
+    structure: "AIL-compliant"
+    purpose: "Hace rule definitions"
+    
+  ail_in_clo:
+    rule: "CLO files MUST use AIL v3.1.8 format"
+    header: "Required với RC:// or SMF:// prefix"
+    
+  embedding_in_clo:
+    allowed: true
+    use_case: "Embed Rust macro, CBOR schema, test fixtures"
+    example: |
+      # File: override-precedence-law.clo
+      embeddings:
+        macro:
+          filename: "precedence_resolver.rs"
+          hash: "SHA256:abc..."
+          data: "{{inline or reference}}"
+  
+  sio_for_clo_bundles:
+    use_case: "Package related CLO + artifacts"
+    example: "constitution-bundle.sio containing all P0 CLO"
+```
+
+---
+
+## 🔐 SEAL & INTEGRITY
+
+### AIL Sealing Protocol
+
+```yaml
+sealing:
+  ail_files:
+    status: "UNSEALED by default"
+    transition: ".ail → .sio or .pid for sealing"
+    
+  sio_files:
+    status: "SEALED"
+    method: "Digital signature + timestamp"
+    immutability: "Cannot unpack and repack without breaking seal"
+    
+  pid_files:
+    status: "IMMUTABLE"
+    method: "Cryptographic seal + layout lock"
+    use_case: "Legal documents, final deliverables"
+  
+  hash_anchoring:
+    embedded_artifacts: "Each artifact has individual hash"
+    container: ".sio has Merkle tree root hash"
+    verification: "Verify individual → verify tree → verify seal"
+```
+
+---
+
+## 📊 DETERMINISTIC BUILD GUARANTEE
+
+### Build Reproducibility
+
+```yaml
+deterministic_build:
+  goal: "Cùng input → cùng output hash"
+  
+  requirements:
+    - "Canonical ordering of all lists"
+    - "Normalized whitespace in text"
+    - "Canonical JSON/CBOR serialization"
+    - "No embedded timestamps (except in seal.log)"
+    - "No filesystem metadata in archives"
+  
+  verification:
+    test: "Build 2 lần ở 2 máy khác nhau"
+    expect: "SHA256 của .sio identical"
+    
+  ci_cd_integration:
+    tool: "Reproducible build checker"
+    frequency: "Every commit"
+    action_on_fail: "Block merge"
+```
+
+---
+
+## 🧪 TESTING EMBEDDINGS
+
+### Verification Test Suite
+
+```yaml
+testing:
+  hash_verification:
+    test: "Load embedded artifact, compute hash, compare"
+    expect: "Match"
+    
+  canonical_json:
+    test: '{"b":2,"a":1} → canonicalize → {"a":1,"b":2}'
+    expect: "Same hash every time"
+    
+  cbor_determinism:
+    test: "Encode same data 100 times"
+    expect: "Identical bytes"
+    
+  sio_rebuild:
+    test: "Unpack → repack .sio"
+    expect: "Same hash (if deterministic packing)"
+    
+  cross_platform:
+    test: "Build .sio on Linux, Mac, Windows"
+    expect: "Identical hashes"
+```
+
+---
+
+## 📚 REFERENCES
+
+```yaml
+references:
+  standards:
+    - "RFC 8785 - JSON Canonicalization Scheme (JCS)"
+    - "RFC 8949 - CBOR (Section 4.2 Deterministic Encoding)"
+    - "AIL Specification v3.1.8"
+    
+  constitution:
+    - "ros-charter.clo"
+    - "core-four-governance.clo"
+    - "poly-ledger-anchor-law.clo"
+    
+  rules:
+    - "append-only-registry-rule.clo"
+    - "deterministic-build-rule.clo"
+    
+  protocols:
+    - "alue-seal-protocol.clo"
+    - "amo-loader-protocol.clo"
+```
+
+---
+
+## 💬 GOVERNANCE NOTE
+
+```yaml
+governance:
+  compiler: "CGE (Chief Governance Engine)"
+  authority: "Core Four (AS/TI/PI/HI)"
+  
+  amendment_process:
+    condition: "AIL version bump (3.1.x → 3.2.0)"
+    approval: "Core Four consensus"
+    backward_compatibility: "Phải đảm bảo với v3.1.x"
+  
+  embedding_security:
+    review: "All embedded binaries phải qua HRH review"
+    whitelist: "Approved artifact types only"
+    sandbox: "Untrusted artifacts chạy trong sandbox"
+  
+  principle:
+    message: "Quân tử - không vượt quyền HI"
+    rule: "AIL là giao thức ý chí, không phải lệnh máy"
+```
+
+---
+
+## 📌 QUICK REFERENCE CARD
+
+```yaml
+quick_ref:
+  file_extensions:
+    ail: "Editable, unsealed"
+    sio: "Sealed bundle"
+    pid: "Immutable document"
+  
+  language_ratio:
+    narrative: "85% local language"
+    machine: "100% English"
+  
+  embedding_limits:
+    inline: "< 100KB"
+    reference: "> 100KB"
+    bundle: "Multiple artifacts"
+  
+  hash_method: "SHA256"
+  
+  canonical_standards:
+    json: "RFC 8785"
+    cbor: "RFC 8949 Section 4.2"
+  
+  verification_command:
+    inline: "sha256sum <extracted_artifact>"
+    bundle: "verify-sio-integrity bundle.sio"
+```
+
+---
+
+**END OF ALLIANCE INTENT LANGUAGE RULES v3.1.8**
+*Sealed: 2025-02-23*
+*Hash: {{to_be_computed}}*
+*Era: 5-CAFE*
+
+---
+
+## 🔗 APPENDIX: EMBEDDING EXAMPLES
+
+### Example 1: Inline Rust Macro
+
+```ail
+embeddings:
+  precedence_macro:
+    id: "override-precedence-resolver"
+    type: "text/x-rust"
+    encoding: "utf-8"
+    hash: "SHA256:1a2b3c4d5e6f..."
+    normalized: true
+    data: |
+      #[macro_export]
+      macro_rules! resolve_precedence {
+          ($domain:expr, $weights:expr) => {
+              $weights.get($domain).unwrap_or(&0.0)
+          };
+      }
+```
+
+### Example 2: Referenced CBOR Schema
+
+```ail
+embeddings:
+  payment_schema:
+    id: "payment-transaction-schema"
+    type: "application/cbor"
+    hash: "SHA256:9z8y7x6w5v..."
+    location: "poly-ledger://schema/9z8y7x6w5v"
+    size: 2048
+    metadata:
+      version: "1.0"
+      created: "2025-02-23"
+```
+
+### Example 3: .sio Bundle Manifest
+
+```ail
+bundle:
+  name: "constitution-p0-bundle"
+  version: "1.0"
+  sealed: true
+  
+  artifacts:
+    - filename: "override-precedence-law.clo"
+      hash: "SHA256:aaa111..."
+      
+    - filename: "authority-boundary-law.clo"
+      hash: "SHA256:bbb222..."
+      
+    - filename: "seal-integrity-law.clo"
+      hash: "SHA256:ccc333..."
+  
+  merkle_root: "SHA256:xyz789..."
+  signature: "ED25519:signature_here..."
+```

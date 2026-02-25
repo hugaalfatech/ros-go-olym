@@ -1,0 +1,227 @@
+# ROS 3-Space Architecture (HA–CO–HO–GO) – GO Canon Copy
+
+```yaml
+# HEADER (100% EN)
+header:
+  id: ROS://architecture.ros-3space.v1
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+```
+
+---
+
+## I. Tổng quan
+
+Kiến trúc ROS được tổ chức theo 4 không gian thực tế:
+
+- HA – Hace (Local Authority Space)
+- CO – Comet (Execution Network Space)
+- HO – Helio (Cloud Augmentation Space)
+- GO – Government Olympia (Supreme Governance Space)
+
+Trong đó:
+
+- HA giữ Authority runtime
+- CO & HO thực thi
+- GO giữ luật tối cao (constitutional canon) cho toàn hệ
+
+---
+
+## II. Space Definitions
+
+### 1. HA – Hace (Authority Plane)
+
+- Root: `ha:/`
+- Ví dụ thực tế: `t:/hace`
+- Chứa:
+  - `.hace/rules/*` (Master Canon)
+  - RAC Client
+  - MCP Providers
+  - Alliance adapters
+
+Tính chất:
+
+- Build + Sign Envelope v1
+- Verify full return
+- Enforce local policy
+- Là Root of Trust runtime
+
+---
+
+### 2. CO – Comet (Execution Mesh)
+
+- Root: `co:/`
+- Ví dụ: `t:/comet`
+
+Chứa:
+
+- RAC Server engines
+- Execution actors
+- Mesh services
+
+Tính chất:
+
+- Execute signed RC
+- Không tự tạo Authority
+- Không Seal canon
+
+---
+
+### 3. HO – Helio (Cloud Augmentation)
+
+- Root: `ho:/`
+- Ví dụ: `t:/helio` hoặc cloud mount
+
+Chứa:
+
+- RAC Gateway (cloud)
+- Model hosting
+- Index, storage dài hạn
+- Canon mirror (read-only)
+
+Tính chất:
+
+- Execute signed RC
+- Không giữ Seal
+- Không override Authority
+
+---
+
+### 4. GO – Government Olympia (Supreme Governance)
+
+- Root: `go:/`
+- Canon root: `go:/.olym`
+
+Government Olympia là không gian giữ:
+
+- Constitutional Canon
+- Federation Rules
+- Authority Boundary Rules
+- Encoding standards
+- Signature policy
+
+GO không tham gia execution runtime trực tiếp.
+
+Vai trò:
+
+- Định nghĩa luật
+- Chuẩn hóa protocol
+- Thiết lập chuẩn Canon
+
+GO là Normative Plane (không phải runtime plane).
+
+---
+
+## III. Authority Boundary Model
+
+```yaml
+authority_matrix:
+  - space: "HA"
+    authority: "Yes"
+    execution: "Yes"
+    canon_seal: "Yes"
+    governance: "No"
+  - space: "CO"
+    authority: "No"
+    execution: "Yes"
+    canon_seal: "No"
+    governance: "No"
+  - space: "HO"
+    authority: "No"
+    execution: "Yes"
+    canon_seal: "No"
+    governance: "No"
+  - space: "GO"
+    authority: "Meta"
+    execution: "No"
+    canon_seal: "Canon Root"
+    governance: "Yes"
+```
+
+Nguyên tắc:
+
+1. HA không được vi phạm GO canon.
+2. CO/HO không được tự nâng quyền.
+3. GO không inject runtime execution.
+
+---
+
+## IV. RAC Topology
+
+Lớp kết nối:
+
+- RC (Intent)
+- Envelope v1 (Canonical encoding + signature)
+- RAC Protocol
+- MCP Carrier
+
+Luồng chuẩn:
+
+- HA → (MCP Carrier) → CO or HO → Execute → Return Envelope → HA Verify
+
+GO không nằm trong luồng runtime.
+
+---
+
+## V. Canon Hierarchy
+
+```text
+go:/.olym          ← Constitutional Canon (Supreme)
+        ↓
+ha:/.hace/rules    ← Runtime Canon (Local Authority)
+        ↓
+co:/ & ho:/ actors ← Execution Layer
+```
+
+GO có thể:
+
+- Phát hành chuẩn encoding mới
+- Ban hành federation rules
+- Định nghĩa signature scope
+
+HA phải tuân thủ.
+
+---
+
+## VI. Technical Schema
+
+```yaml
+entity:
+  name: RosThreeSpaceArchitecture
+  fields:
+    space_id:
+      type: string
+      label: "Mã không gian"
+    authority_level:
+      type: string
+      label: "Cấp thẩm quyền"
+    execution_role:
+      type: string
+      label: "Vai trò thực thi"
+    canon_scope:
+      type: string
+      label: "Phạm vi canon"
+    root_path:
+      type: string
+      label: "Đường dẫn gốc"
+```
+
+---
+
+## VII. Conceptual Model
+
+- GO = Constitutional Layer
+- HA = Authority + Control Plane
+- CO = Execution Mesh
+- HO = Cloud Augmentation
+- RAC = Unified Actor Call Protocol
+- MCP = Neutral Carrier
+
+Kiến trúc này đảm bảo:
+
+- Tách biệt luật và thực thi
+- Không space nào tự phong quyền
+- Authority có nguồn gốc rõ ràng
+- Canon có tầng tối cao
+

@@ -1,0 +1,101 @@
+# SEAL INTEGRITY LAW v1.0
+
+```yaml
+header:
+  id: RC://constitution.seal-integrity.v1
+  intent: DECLARE_LAW
+  status: LOCKED
+  locale: vi-85
+
+metadata:
+  fractal_name: "ros.constitution.law.seal-integrity"
+  lazy_type: "constitutional_rule"
+  version: "1.0.0"
+  authority_level: "constitution"
+  append_only: true
+  hash_anchor: "{{to_be_sealed}}"
+
+body:
+  title: "Luật toàn vẹn niêm phong"
+  summary: "Hash anchoring + LOCKED lifecycle - không downgrade"
+  
+  definitions:
+    - key: "seal"
+      meaning: "SHA256 hash anchor trong poly-ledger"
+    
+    - key: "LOCKED"
+      meaning: "Status bất biến - không được downgrade"
+    
+    - key: "hash_anchor"
+      meaning: "Cryptographic proof of integrity"
+  
+  invariants:
+    - "LOCKED không downgrade về DRAFT"
+    - "Hash mismatch = REJECT + ALERT"
+    - "Seal phải poly-ledger anchored"
+    - "Không sửa file đã sealed"
+  
+  rules:
+    - id: "R1"
+      statement: "Status lifecycle: DRAFT → ACTIVE → LOCKED"
+      enforcement: "One-way transition only"
+    
+    - id: "R2"
+      statement: "LOCKED file không được modify"
+      enforcement: "Filesystem 444 permission + watch"
+    
+    - id: "R3"
+      statement: "Hash phải SHA256"
+      enforcement: "No MD5, no SHA1, locked standard"
+    
+    - id: "R4"
+      statement: "Hash mismatch = loader reject"
+      enforcement: "Pre-load verification mandatory"
+    
+    - id: "R5"
+      statement: "Seal.log append-only"
+      enforcement: "No overwrite, no delete"
+    
+    - id: "R6"
+      statement: "Poly-ledger anchor required"
+      enforcement: "No seal without ledger entry"
+
+  lifecycle:
+    DRAFT:
+      mutable: true
+      sealed: false
+      use: "Development, iteration"
+    
+    ACTIVE:
+      mutable: false
+      sealed: true
+      use: "Production ready, not frozen"
+    
+    LOCKED:
+      mutable: false
+      sealed: true
+      immutable: true
+      use: "Frozen, constitutional"
+    
+    DEPRECATED:
+      mutable: false
+      sealed: true
+      use: "Superseded, archived"
+
+  verification_flow:
+    step_1: "Read file content"
+    step_2: "Compute SHA256"
+    step_3: "Compare with seal.log"
+    step_4: "Query poly-ledger anchor"
+    step_5: "If match → TRUST, else → REJECT"
+
+references:
+  - "constitution/poly-ledger-anchor-law/v1.0"
+  - "rule/append-only-registry-rule/v1.0"
+  - "protocol/registry-freeze-protocol/v1.0"
+
+seal:
+  method: "SHA256"
+  anchor: "poly-ledger"
+  status: "LOCKED"
+```

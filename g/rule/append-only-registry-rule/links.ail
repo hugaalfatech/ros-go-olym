@@ -1,0 +1,49 @@
+# LINKS - Cross-domain references
+# Object: append-only-registry-rule
+
+references:
+  constitution:
+    - id: "poly-ledger-anchor-law"
+      version: "v1.0"
+      reason: "Hash anchoring foundation"
+      status: "LOCKED"
+    
+    - id: "seal-integrity-law"
+      version: "v1.0"
+      reason: "LOCKED lifecycle rules"
+      status: "PENDING"
+    
+    - id: "override-precedence-law"
+      version: "v1.0"
+      reason: "Conflict resolution when append fails"
+      status: "PENDING"
+  
+  protocol:
+    - id: "registry-freeze-protocol"
+      version: "v1.0"
+      reason: "Freeze/unfreeze gate control"
+      status: "PENDING"
+  
+  rule:
+    - id: "deterministic-build-rule"
+      version: "v1.0"
+      reason: "Build-time complement to append-only"
+      status: "PENDING"
+    
+    - id: "lock-status-transition-rule"
+      version: "v1.0"
+      reason: "DRAFT→LOCKED transition rules"
+      status: "DRAFT"
+
+used_by:
+  - domain: "engine"
+    object: "clo-loader"
+    reason: "Loader phải tuân thủ append-only khi scan registry"
+  
+  - domain: "protocol"
+    object: "amo-loader-protocol"
+    reason: "AMO loading phải respect version immutability"
+  
+  - domain: "spec"
+    object: "clo-loader-spec"
+    reason: "Spec implementation của append-only principle"

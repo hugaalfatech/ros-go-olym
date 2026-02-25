@@ -1,0 +1,34 @@
+# CHANGELOG - APPEND ONLY
+# Object: append-only-registry-rule
+
+## v1.0 (2025-02-23)
+### Initial Release
+
+#### Added
+- Append-only principle cho toàn bộ .olym registry
+- Immutable spine cho 7 domain folders
+- Version discipline (major/minor bump rules)
+- Seal.log append-only format
+- Changelog.ail append-only format
+- Links.ail cross-reference model
+- Master/index.clo authority pointer
+- Forbidden operations list
+- Pre-commit compliance check
+- 10-year stability goal
+
+#### Why
+- Đảm bảo deterministic loading
+- Tránh overwrite gây mất seal integrity
+- Hỗ trợ poly-ledger anchoring
+- Chuẩn bị cho T3C/Hace enable
+- Audit trail hoàn chỉnh
+
+#### Dependencies
+- constitution/poly-ledger-anchor-law.clo
+- constitution/seal-integrity-law.clo (pending)
+- protocol/registry-freeze-protocol.clo (pending)
+
+#### Compliance
+- Follows AIL v3.1.8 (85% VI + 15% EN)
+- Fractal naming: ros.rule.registry.append-only
+- Lazy type: immutability_rule

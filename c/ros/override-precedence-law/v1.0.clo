@@ -1,0 +1,75 @@
+# OVERRIDE PRECEDENCE LAW v1.0
+
+```yaml
+header:
+  id: RC://constitution.override-precedence.v1
+  intent: DECLARE_LAW
+  status: LOCKED
+  locale: vi-85
+
+metadata:
+  fractal_name: "ros.constitution.law.precedence"
+  lazy_type: "constitutional_rule"
+  version: "1.0.0"
+  authority_level: "constitution"
+  append_only: true
+  hash_anchor: "{{to_be_sealed}}"
+
+body:
+  title: "Luật phân xử thứ tự ưu tiên"
+  summary: "Law of Laws - Quyết định precedence khi domain xung đột"
+  
+  definitions:
+    - key: "precedence_weight"
+      meaning: "Trọng số ưu tiên theo domain hierarchy"
+    
+    - key: "conflict_resolution"
+      meaning: "Cơ chế phân xử khi 2+ CLO xung đột"
+  
+  invariants:
+    - "Không ai đứng trên hiến pháp"
+    - "Constitution > Engine > Protocol > Rule > Spec"
+    - "Higher weight luôn thắng"
+    - "Tie-breaker: lex specialis derogat generali"
+  
+  rules:
+    - id: "R1"
+      statement: "Constitution domain weight = 0.40"
+      enforcement: "Loader MUST check weight trước khi apply"
+    
+    - id: "R2"
+      statement: "Engine domain weight = 0.25"
+      enforcement: "Cannot override constitution"
+    
+    - id: "R3"
+      statement: "Protocol domain weight = 0.20"
+      enforcement: "Cannot override engine"
+    
+    - id: "R4"
+      statement: "Rule domain weight = 0.15"
+      enforcement: "Cannot override protocol"
+    
+    - id: "R5"
+      statement: "Spec domain weight = 0.00"
+      enforcement: "Lowest priority, implementation only"
+    
+    - id: "R6"
+      statement: "Tie-breaker: more specific wins"
+      enforcement: "Lex specialis derogat generali"
+
+  conflict_matrix:
+    constitution_vs_engine: "constitution wins"
+    engine_vs_protocol: "engine wins"
+    protocol_vs_rule: "protocol wins"
+    rule_vs_spec: "rule wins"
+    same_domain: "apply tie-breaker"
+
+references:
+  - "constitution/core-four-governance/v1.0"
+  - "constitution/fractal-invariance/v1.0"
+
+seal:
+  method: "SHA256"
+  anchor: "poly-ledger"
+  status: "LOCKED"
+```

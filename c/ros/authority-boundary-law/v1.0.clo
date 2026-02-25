@@ -1,0 +1,88 @@
+# AUTHORITY BOUNDARY LAW v1.0
+
+```yaml
+header:
+  id: RC://constitution.authority-boundary.v1
+  intent: DECLARE_LAW
+  status: LOCKED
+  locale: vi-85
+
+metadata:
+  fractal_name: "ros.constitution.law.authority-boundary"
+  lazy_type: "constitutional_rule"
+  version: "1.0.0"
+  authority_level: "constitution"
+  append_only: true
+  hash_anchor: "{{to_be_sealed}}"
+
+body:
+  title: "Luật ranh giới thẩm quyền"
+  summary: "Định nghĩa boundary AS/TI/PI/HI - không được vi phạm"
+  
+  definitions:
+    - key: "AS"
+      meaning: "Autonomous System - Hệ thống tự trị"
+    
+    - key: "TI"
+      meaning: "Tool Intelligence - Trí tuệ công cụ"
+    
+    - key: "PI"
+      meaning: "Program Intelligence - Trí tuệ chương trình"
+    
+    - key: "HI"
+      meaning: "Human Intelligence - Trí tuệ con người (tối thượng)"
+  
+  invariants:
+    - "HI > PI > TI > AS"
+    - "Không được tự nâng quyền"
+    - "Mọi escalation phải qua HRH"
+    - "Boundary vi phạm = SYSTEM_HALT"
+  
+  rules:
+    - id: "R1"
+      statement: "AS không được gọi TI API"
+      enforcement: "ARVM reject runtime"
+    
+    - id: "R2"
+      statement: "TI không được modify PI state"
+      enforcement: "Sandbox isolation"
+    
+    - id: "R3"
+      statement: "PI không được override HI decision"
+      enforcement: "Human-in-loop required"
+    
+    - id: "R4"
+      statement: "HI có quyền veto mọi quyết định"
+      enforcement: "Emergency stop button"
+    
+    - id: "R5"
+      statement: "Engine authority map phải respect boundary"
+      enforcement: "Compile-time + runtime check"
+
+  boundary_table:
+    AS:
+      can_call: []
+      cannot_call: ["TI", "PI", "HI"]
+    
+    TI:
+      can_call: ["AS"]
+      cannot_call: ["PI", "HI"]
+    
+    PI:
+      can_call: ["AS", "TI"]
+      cannot_call: ["HI"]
+    
+    HI:
+      can_call: ["AS", "TI", "PI"]
+      cannot_call: []
+
+references:
+  - "constitution/aa-dec-canon/v1.0"
+  - "constitution/core-four-governance/v1.0"
+  - "engine/engine-authority-map/v1.0"
+
+seal:
+  method: "SHA256"
+  anchor: "poly-ledger"
+  status: "LOCKED"
+```

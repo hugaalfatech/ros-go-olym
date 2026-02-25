@@ -1,0 +1,174 @@
+# OLYM Structure Rule – Government Olympia Layout Canon
+
+```yaml
+header:
+  id: ROS://olym.structure-rule.v1
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+  
+metadata:
+  fractal_name: "ros.olympia.structure"
+  lazy_type: "olym_structure_rule"
+  version: "1.0.0"
+  hash_anchor: "{{to_be_sealed}}"
+```
+
+---
+
+## I. Purpose
+
+Quy tắc này chuẩn hóa cấu trúc thư mục cho Government Olympia (`go:/.olym/*`)
+để tất cả AIA Cogen có thể nhận biết vai trò từng nhánh mà không cần suy đoán.
+
+---
+
+## II. Top-level Layout
+
+```yaml
+layout:
+  root: "go:/.olym/"
+  branches:
+    - id: "c"
+      path: "go:/.olym/c/"
+      role: "Constitutional canon – luật tối cao"
+    - id: "g"
+      path: "go:/.olym/g/"
+      role: "Governance instruments – policy, charter, rule, stage"
+    - id: "s"
+      path: "go:/.olym/s/"
+      role: "Standards & Specifications – machine-binding standards"
+    - id: "k"
+      path: "go:/.olym/k/"
+      role: "Knowledge canon – blueprint, stage model, domain knowledge"
+    - id: "x"
+      path: "go:/.olym/x/"
+      role: "Extensions – experimental/non-core/interop"
+    - id: "release"
+      path: "go:/.olym/release/"
+      role: "Sealed bundles – versioned, immutable"
+    - id: "meta"
+      path: "go:/.olym/meta/"
+      role: "Meta-governance – governance model, amendment, compatibility"
+```
+
+---
+
+## III. Branch Semantics
+
+```yaml
+semantics:
+  c:
+    description: "Authority law – constitutional canon"
+    mandatory_for_runtime: true
+    can_define_byte_layout: false
+  g:
+    description: "Governance instruments – policy/charter/rule/stage"
+    mandatory_for_runtime: true
+    can_change_c_or_s: false
+    can_define_amendment_process: true
+  s:
+    description: "Technical standards & specs – machine contracts"
+    mandatory_for_runtime: true
+    can_define_byte_layout: true
+  k:
+    description: "Knowledge canon – blueprint & domain models"
+    mandatory_for_runtime: false
+  x:
+    description: "Extensions – draft/interop/profile/legacy modules"
+    mandatory_for_runtime: false
+  release:
+    description: "Versioned sealed bundles of c + s (+ optional k/x)"
+  meta:
+    description: "Meta rules for Olympia itself"
+```
+
+---
+
+## IV. Canonical Mapping (Local RRP)
+
+```yaml
+rrp:
+  local_root: "t:/hace/.olym/"
+  mapping:
+    go:/.olym/ -> "t:/hace/.olym/"
+    go:/.olym/c/ -> "t:/hace/.olym/c/"
+    go:/.olym/g/ -> "t:/hace/.olym/g/"
+    go:/.olym/s/ -> "t:/hace/.olym/s/"
+    go:/.olym/k/ -> "t:/hace/.olym/k/"
+    go:/.olym/x/ -> "t:/hace/.olym/x/"
+    go:/.olym/release/ -> "t:/hace/.olym/release/"
+    go:/.olym/meta/ -> "t:/hace/.olym/meta/"
+```
+
+---
+
+## V. Compact Namespaces
+
+```yaml
+compact_namespaces:
+  gov_c: "//gov/c/*"  # -> go:/.olym/c/*
+  gov_g: "//gov/g/*"  # -> go:/.olym/g/*
+  gov_s: "//gov/s/*"  # -> go:/.olym/s/*
+  gov_k: "//gov/k/*"  # -> go:/.olym/k/*
+  gov_x: "//gov/x/*"  # -> go:/.olym/x/*
+```
+
+---
+
+## VI. Authority & Stability Levels
+
+```yaml
+stability:
+  c:
+    stability: "very_stable"
+    change_requires: "constitutional_amendment_via_g"
+  s:
+    stability: "stable"
+    change_requires: "governance_process_via_g"
+  g:
+    stability: "stable"
+    change_requires: "core_four_consensus"
+  k:
+    stability: "evolvable"
+    change_requires: "domain_owner_approval"
+  x:
+    stability: "experimental"
+    change_requires: "profile_opt_in + governance_flag"
+```
+
+---
+
+## VII. Runtime Constraints
+
+```yaml
+runtime_constraints:
+  go_plane:
+    may_contain_runtime_code: false
+    may_contain_private_runtime_keys: false
+    may_contain_execution_engine: false
+  ha_plane:
+    must_read_from:
+      - "go:/.olym/c/"
+      - "go:/.olym/s/"
+    may_read_from:
+      - "go:/.olym/k/"
+      - "go:/.olym/x/"
+```
+
+---
+
+## VIII. AIA Cogen Guidance
+
+- Khi load Government Olympia:
+  - Đọc `olym-structure-rule.ail` để hiểu layout.
+  - Không suy đoán thêm thư mục ngoài tập: `c/ g/ s/ k/ x/ release/ meta/`.
+- Khi cần tìm:
+  - Luật tối cao → `c/`
+  - Chuẩn máy → `s/`
+  - Tri thức & blueprint → `k/`
+  - Governance → `g/`
+  - Extension/experimental → `x/`
+
+Quy tắc này là điểm vào duy nhất để AIA Cogen khám phá cấu trúc Olympia.
+

@@ -1,0 +1,581 @@
+# APPEND-ONLY REGISTRY RULE v1.0
+## Quy tắc bất biến cho registry management
+
+```yaml
+# HEADER
+header:
+  id: RC://rule.append-only-registry.v1
+  intent: DECLARE_RULE
+  status: LOCKED
+  locale: vi-85
+  
+metadata:
+  fractal_name: "ros.rule.registry.append-only"
+  lazy_type: "immutability_rule"
+  version: "1.0"
+  seal_date: "2025-02-23"
+  hash_anchor: "{{to_be_sealed}}"
+  
+dependencies:
+  constitution:
+    - "poly-ledger-anchor-law.clo"
+    - "seal-integrity-law.clo"
+  protocol:
+    - "registry-freeze-protocol.clo"
+```
+
+---
+
+## 🎯 MỤC ĐÍCH
+
+Quy tắc này đảm bảo registry (.olym) **không bao giờ bị overwrite, rename, hay delete**, 
+chỉ được **append** và **supersede** theo version control.
+
+**Mục tiêu 10 năm:** Cấu trúc folder không thay đổi, deterministic loading, zero jitter.
+
+---
+
+## 📜 NGUYÊN TẮC CỐT LÕI
+
+### 1️⃣ Append-Only Principle
+
+```yaml
+principle:
+  name: "APPEND_ONLY"
+  rule: "Chỉ thêm, không sửa, không xóa"
+  
+  allowed_operations:
+    - action: "append_version"
+      condition: "Tạo vX.X+1.clo mới"
+      example: "override-precedence-law/v1.1.clo"
+      
+    - action: "append_seal_log"
+      condition: "Ghi thêm hash vào seal.log"
+      example: "seal.log += 'v1.1 → SHA256:abc...'"
+      
+    - action: "append_changelog"
+      condition: "Ghi lý do version bump"
+      example: "changelog.ail += 'v1.1: Fixed authority boundary'"
+  
+  forbidden_operations:
+    - action: "overwrite_file"
+      penalty: "REJECT_COMMIT"
+      
+    - action: "rename_folder"
+      penalty: "REJECT_COMMIT"
+      
+    - action: "delete_version"
+      penalty: "REJECT_COMMIT"
+      
+    - action: "force_downgrade"
+      penalty: "SYSTEM_HALT"
+```
+
+---
+
+## 🗂️ CẤU TRÚC FRACTAL FOLDER
+
+### Domain Root (Immutable Spine)
+
+```yaml
+immutable_spine:
+  path: "t:/hace/.olym/"
+  
+  domains:
+    - name: "constitution"
+      status: "IMMUTABLE"
+      rule: "Không được thêm/xóa/đổi tên domain này"
+      
+    - name: "engine"
+      status: "IMMUTABLE"
+      rule: "Không được thêm/xóa/đổi tên domain này"
+      
+    - name: "protocol"
+      status: "IMMUTABLE"
+      rule: "Không được thêm/xóa/đổi tên domain này"
+      
+    - name: "rule"
+      status: "IMMUTABLE"
+      rule: "Không được thêm/xóa/đổi tên domain này"
+      
+    - name: "spec"
+      status: "IMMUTABLE"
+      rule: "Không được thêm/xóa/đổi tên domain này"
+      
+    - name: "blueprint"
+      status: "IMMUTABLE"
+      rule: "Không được thêm/xóa/đổi tên domain này"
+      
+    - name: "term"
+      status: "IMMUTABLE"
+      rule: "Không được thêm/xóa/đổi tên domain này"
+  
+  expansion_rule:
+    allowed: true
+    condition: "Chỉ được thêm domain mới qua constitutional amendment"
+    example: "Nếu cần domain 'adapter', phải qua Core Four governance"
+```
+
+---
+
+## 📁 Object Folder Pattern
+
+### Standard Structure
+
+```yaml
+object_pattern:
+  structure: |
+    <domain>/<object-name>/
+    ├── v1.0.clo        # First sealed version
+    ├── v1.1.clo        # Refinement
+    ├── v2.0.clo        # Major revision
+    ├── changelog.ail   # Version history
+    ├── seal.log        # Hash anchors
+    └── links.ail       # Cross-references
+  
+  rules:
+    - "Object phải là folder, không phải file trực tiếp"
+    - "Version file theo pattern vX.Y.clo"
+    - "Mỗi version phải có entry trong seal.log"
+    - "changelog.ail là append-only log"
+```
+
+---
+
+## 🔢 VERSION DISCIPLINE
+
+### Version Bumping Rules
+
+```yaml
+versioning:
+  major_bump:
+    trigger: "Breaking change trong API/interface"
+    pattern: "v1.0 → v2.0"
+    example: "override-precedence-law thay đổi weight formula"
+    
+  minor_bump:
+    trigger: "Refinement, clarification, non-breaking fix"
+    pattern: "v1.0 → v1.1"
+    example: "Bổ sung ví dụ, sửa typo logic"
+    
+  forbidden:
+    - action: "Sửa file cũ"
+      why: "Phá vỡ hash anchor"
+      
+    - action: "Xóa version cũ"
+      why: "Mất lịch sử audit"
+      
+    - action: "Rename version file"
+      why: "Gây confusion cho loader"
+```
+
+---
+
+## 🔐 SEAL LOG DISCIPLINE
+
+### Seal.log Format
+
+```yaml
+seal_format:
+  file: "seal.log"
+  structure: |
+    # SEAL LOG - APPEND ONLY
+    v1.0 | 2025-02-23T08:00:00Z | SHA256:abc123... | LOCKED
+    v1.1 | 2025-02-24T10:30:00Z | SHA256:def456... | ACTIVE
+  
+  rules:
+    - "Mỗi version phải có 1 entry"
+    - "Entry không được sửa/xóa"
+    - "Hash phải match với file content"
+    - "Status: DRAFT → LOCKED → DEPRECATED"
+```
+
+---
+
+## 📋 CHANGELOG DISCIPLINE
+
+### Changelog.ail Format
+
+```yaml
+changelog_format:
+  file: "changelog.ail"
+  structure: |
+    # CHANGELOG - APPEND ONLY
+    
+    ## v1.1 (2025-02-24)
+    ### Changed
+    - Refined authority weight calculation
+    - Added cross-domain conflict example
+    
+    ### Why
+    - User feedback: unclear precedence in edge case
+    
+    ## v1.0 (2025-02-23)
+    ### Initial Release
+    - Established append-only principle
+  
+  rules:
+    - "Mỗi version phải có section riêng"
+    - "Phải ghi rõ lý do thay đổi (Why)"
+    - "Không được sửa entry cũ"
+```
+
+---
+
+## 🔗 CROSS-REFERENCE MODEL
+
+### Links.ail Pattern
+
+```yaml
+links_model:
+  file: "links.ail"
+  purpose: "Track dependencies without embedding content"
+  
+  structure: |
+    # LINKS - Cross-domain references
+    
+    references:
+      constitution:
+        - id: "authority-boundary-law"
+          version: "v1.0"
+          reason: "Authority weight definition"
+      
+      engine:
+        - id: "engine-authority-map"
+          version: "v1.0"
+          reason: "Implementation reference"
+  
+  rules:
+    - "Không embed content từ file khác"
+    - "Chỉ link tới version cụ thể"
+    - "Phải ghi rõ lý do reference"
+```
+
+---
+
+## 📊 MASTER INDEX CONTROL
+
+### Master/index.clo Authority
+
+```yaml
+master_index:
+  location: "t:/hace/.olym/master/index.clo"
+  authority: "ROOT"
+  
+  responsibilities:
+    - "Pointer tới active version của mỗi object"
+    - "Status tracking (DRAFT/LOCKED/DEPRECATED)"
+    - "Cross-domain integrity check"
+  
+  example:
+    objects:
+      - id: "override-precedence-law"
+        domain: "constitution"
+        active_version: "v1.1"
+        status: "LOCKED"
+        last_update: "2025-02-24"
+      
+      - id: "append-only-registry-rule"
+        domain: "rule"
+        active_version: "v1.0"
+        status: "LOCKED"
+        last_update: "2025-02-23"
+  
+  update_rules:
+    - "Chỉ được update active_version pointer"
+    - "Không được xóa object entry"
+    - "Status chỉ được: DRAFT → LOCKED → DEPRECATED"
+    - "Deprecated object vẫn giữ entry"
+```
+
+---
+
+## 🚫 FORBIDDEN OPERATIONS
+
+```yaml
+forbidden:
+  overwrite:
+    example: "echo 'new' > v1.0.clo"
+    penalty: "REJECT_COMMIT"
+    reason: "Phá vỡ seal integrity"
+  
+  rename:
+    example: "mv override-precedence-law precedence-law"
+    penalty: "REJECT_COMMIT"
+    reason: "Gây confusion cho loader deterministic path"
+  
+  delete:
+    example: "rm v1.0.clo"
+    penalty: "REJECT_COMMIT"
+    reason: "Mất audit trail"
+  
+  force_downgrade:
+    example: "active_version: v1.1 → v1.0"
+    penalty: "SYSTEM_HALT"
+    reason: "Vi phạm seal-integrity-law"
+  
+  domain_mutation:
+    example: "mv constitution/obj rule/obj"
+    penalty: "CONSTITUTION_VIOLATION"
+    reason: "Domain boundary không được vi phạm"
+```
+
+---
+
+## ✅ ALLOWED OPERATIONS
+
+```yaml
+allowed:
+  version_append:
+    action: "Tạo v1.1.clo mới"
+    condition: "v1.0.clo phải đã LOCKED"
+    flow:
+      1: "Copy v1.0.clo → draft/v1.1.clo"
+      2: "Edit draft/v1.1.clo"
+      3: "Seal → v1.1.clo"
+      4: "Append seal.log"
+      5: "Update master/index.clo pointer"
+  
+  seal_append:
+    action: "Ghi hash mới vào seal.log"
+    condition: "Version mới đã pass integrity check"
+    format: "v1.1 | timestamp | hash | LOCKED"
+  
+  changelog_append:
+    action: "Ghi version history"
+    condition: "Mỗi version bump phải ghi changelog"
+    format: "## vX.X (date)\n### Changed\n- ...\n### Why\n- ..."
+  
+  deprecation:
+    action: "Mark object status = DEPRECATED"
+    condition: "Có superseding object"
+    rule: "Deprecated object vẫn giữ nguyên trong registry"
+```
+
+---
+
+## 🧬 FRACTAL EXPANSION RULE
+
+```yaml
+expansion:
+  new_object:
+    allowed: true
+    process:
+      1: "Tạo <domain>/<new-object>/"
+      2: "Tạo v1.0.clo, changelog.ail, seal.log"
+      3: "Seal v1.0"
+      4: "Update master/index.clo"
+    
+  new_domain:
+    allowed: false
+    exception: "Chỉ qua constitutional amendment"
+    process:
+      1: "Đề xuất tại Core Four governance"
+      2: "Phê duyệt qua override-precedence-law"
+      3: "Update master/master.ail semantic root"
+      4: "Tạo domain folder"
+      5: "Seal domain creation"
+```
+
+---
+
+## 🔍 COMPLIANCE CHECK
+
+### Pre-commit Hook
+
+```yaml
+compliance_check:
+  trigger: "Before git commit"
+  
+  checks:
+    - name: "no_overwrite"
+      test: "git diff không có modification trong sealed files"
+      
+    - name: "no_rename"
+      test: "git status không có renamed files"
+      
+    - name: "no_delete"
+      test: "git status không có deleted files"
+      
+    - name: "seal_integrity"
+      test: "Mỗi .clo mới phải có seal.log entry"
+      
+    - name: "changelog_present"
+      test: "Version bump phải có changelog update"
+  
+  action_on_fail: "REJECT_COMMIT"
+```
+
+---
+
+## 🎯 DETERMINISTIC LOADER BENEFIT
+
+```yaml
+loader_benefits:
+  zero_jitter:
+    reason: "Path không bao giờ thay đổi"
+    example: "constitution/override-precedence-law/v1.0.clo"
+    
+  hash_verification:
+    reason: "Seal.log cho phép verify integrity"
+    example: "SHA256 match → trust"
+    
+  version_control:
+    reason: "Active_version pointer trong index.clo"
+    example: "Loader chỉ load version được point"
+    
+  audit_trail:
+    reason: "Toàn bộ history được giữ lại"
+    example: "Trace từ v1.0 → v1.1 → v2.0"
+```
+
+---
+
+## 📐 CONFLICT RESOLUTION
+
+```yaml
+conflicts:
+  same_domain_conflict:
+    example: "2 objects cùng purpose trong rule/"
+    resolution: "Dùng override-precedence-law để chọn"
+    
+  cross_domain_conflict:
+    example: "rule vs constitution về cùng topic"
+    resolution: "Constitution > rule (theo precedence weight)"
+    
+  version_conflict:
+    example: "v1.0 vs v1.1 active"
+    resolution: "Dùng master/index.clo pointer"
+```
+
+---
+
+## 🚦 T3C/HACE INTEGRATION
+
+```yaml
+t3c_integration:
+  before_enable:
+    required:
+      - "append-only-registry-rule.clo [LOCKED]"
+      - "registry-freeze-protocol.clo [LOCKED]"
+      - "seal-integrity-law.clo [LOCKED]"
+    
+    check:
+      - "Tất cả P0-P1 CLO đã sealed"
+      - "Master/index.clo không có DRAFT"
+      - "Seal.log integrity pass"
+  
+  after_enable:
+    protection:
+      - "T3C không được mutate sealed files"
+      - "T3C chỉ được append new version"
+      - "T3C phải qua registry-freeze-protocol gate"
+```
+
+---
+
+## 📊 10-YEAR STABILITY GOAL
+
+```yaml
+stability_goals:
+  folder_structure:
+    target: "Không thay đổi trong 10 năm"
+    method: "Immutable spine + append-only"
+    
+  backward_compatibility:
+    target: "v1.0 vẫn loadable sau 10 năm"
+    method: "Version không bao giờ xóa"
+    
+  deterministic_behavior:
+    target: "Cùng input → cùng output"
+    method: "No jitter, no rename, no deletion"
+```
+
+---
+
+## 📝 IMPLEMENTATION CHECKLIST
+
+```yaml
+implementation:
+  step_1:
+    task: "Tạo pre-commit hook"
+    file: ".git/hooks/pre-commit"
+    check: ["no_overwrite", "no_rename", "no_delete"]
+    
+  step_2:
+    task: "Setup seal verification"
+    tool: "SHA256 checksum"
+    trigger: "Before load"
+    
+  step_3:
+    task: "Enforce master/index.clo authority"
+    rule: "Loader chỉ tin index.clo pointer"
+    
+  step_4:
+    task: "Document changelog template"
+    file: "master/templates/changelog.template.ail"
+```
+
+---
+
+## 🔐 SEAL VERIFICATION
+
+```yaml
+seal:
+  method: "SHA256"
+  anchor: "poly-ledger"
+  
+  verification_flow:
+    1: "Read v1.0.clo content"
+    2: "Compute SHA256"
+    3: "Compare with seal.log entry"
+    4: "If match → TRUST"
+    5: "If mismatch → REJECT + ALERT"
+```
+
+---
+
+## 📚 REFERENCES
+
+```yaml
+references:
+  constitution:
+    - "poly-ledger-anchor-law.clo"
+    - "seal-integrity-law.clo"
+    - "override-precedence-law.clo"
+    
+  protocol:
+    - "registry-freeze-protocol.clo"
+    
+  related_rules:
+    - "deterministic-build-rule.clo"
+    - "lock-status-transition-rule.clo"
+```
+
+---
+
+## 💬 GOVERNANCE NOTE
+
+```yaml
+governance:
+  compiler: "CGE (Chief Governance Engine)"
+  authority: "Core Four (AS/TI/PI/HI)"
+  
+  amendment_process:
+    condition: "Chỉ khi phát hiện critical flaw"
+    process:
+      1: "Đề xuất tại HRH (Human Review Hub)"
+      2: "Phê duyệt qua override-precedence-law"
+      3: "Tạo v2.0 (major bump)"
+      4: "Không sửa v1.0"
+  
+  principle:
+    message: "Quân tử - không vượt quyền HI"
+    rule: "Append-only là bất biến, trừ khi HI override"
+```
+
+---
+
+**END OF APPEND-ONLY REGISTRY RULE v1.0**
+*Sealed: 2025-02-23*
+*Hash: {{to_be_computed}}*

@@ -1,0 +1,230 @@
+# ROS Authority Boundary Canon
+
+```yaml id="abn7k1"
+# HEADER (100% EN)
+header:
+  id: ROS://governance.authority-boundary.v1
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+```
+
+---
+
+## I. Phạm vi
+
+Tài liệu này chuẩn hóa ranh giới thẩm quyền giữa các spaces của ROS:
+
+- HA – Hace
+- CO – Comet
+- HO – Helio
+- GO – Government Olympia
+
+GO giữ Constitutional Canon tại:
+
+```text
+go:/.olym/c/ros/*
+```
+
+Reality Resource Path (RRP):
+
+```text
+t:/hace/.olym/c/ros/*
+```
+
+---
+
+## II. Authority Layers
+
+### 1. GO – Supreme Normative Authority
+
+Government Olympia
+
+Vai trò:
+
+- Ban hành constitutional canon
+- Định nghĩa:
+  - Canonical Encoding
+  - Signature Scope
+  - Federation Rules
+  - Authority Model
+
+GO:
+
+- Không tham gia runtime execution
+- Không ký thay HA trong RC runtime
+- Không inject actor
+
+GO chỉ phát hành luật.
+
+---
+
+### 2. HA – Runtime Authority
+
+HA là:
+
+- Root of Trust runtime
+- Space duy nhất được:
+  - Build RC
+  - Sign Envelope v1
+  - Verify return envelope
+  - Enforce policy
+
+HA phải tuân thủ canon từ:
+
+```text
+t:/hace/.olym/c/ros/*
+```
+
+HA không được:
+
+- Tự sửa constitutional canon
+- Override encoding chuẩn của GO
+
+---
+
+### 3. CO – Execution Mesh
+
+CO:
+
+- Chỉ execute envelope đã được HA ký
+- Không:
+  - Sửa RC intent
+  - Tự ký envelope mới
+  - Tự nâng authority_level
+
+---
+
+### 4. HO – Cloud Augmentation
+
+HO:
+
+- Execute envelope hợp lệ
+- Có thể verify signature
+- Không được:
+  - Thay đổi signature scope
+  - Inject authority
+  - Tạo canon mới
+
+---
+
+## III. Authority Boundary Rules
+
+### Rule 1 – Single Runtime Signer
+
+Chỉ HA được phép ký runtime envelope.
+
+```python
+if space != HA:
+    signing_runtime_envelope = forbidden
+```
+
+---
+
+### Rule 2 – Canon Supremacy
+
+GO canon tại RRP:
+
+```text
+t:/hace/.olym/c/ros/*
+```
+
+là nguồn tối cao.
+
+Nếu xung đột:
+
+```text
+GO > HA local rule > CO/HO behavior
+```
+
+---
+
+### Rule 3 – Carrier Neutrality
+
+MCP:
+
+- Không parse RC
+- Không verify authority
+- Không giữ state authority
+
+Carrier chỉ vận chuyển.
+
+---
+
+### Rule 4 – No Authority Escalation
+
+CO và HO:
+
+- Không tự tạo:
+  - authority_level
+  - seal
+  - federation token
+
+Mọi escalation phải bắt nguồn từ HA theo canon GO.
+
+---
+
+## IV. Canon Hierarchy Model
+
+```text
+t:/hace/.olym/c/ros/*     ← Supreme Constitutional Canon (GO)
+            ↓
+ha:/.hace/rules/*         ← Runtime Canon (HA)
+            ↓
+co:/ & ho:/ actors        ← Execution
+```
+
+---
+
+## V. Compliance Matrix
+
+| Violation             | Space   | Result                |
+| --------------------- | ------- | --------------------- |
+| CO signs envelope     | CO      | Invalid               |
+| HO modifies RC        | HO      | Reject                |
+| HA overrides GO canon | HA      | Constitutional breach |
+| MCP parses authority  | Carrier | Spec violation        |
+
+---
+
+## VI. Technical Schema
+
+```yaml id="xk91dp"
+entity:
+  name: RosAuthorityBoundary
+  fields:
+    space_id:
+      type: string
+      label: "Mã không gian"
+    authority_level:
+      type: string
+      label: "Cấp thẩm quyền"
+    may_sign_runtime:
+      type: boolean
+      label: "Được ký runtime envelope"
+    may_modify_canon:
+      type: boolean
+      label: "Được sửa canon"
+    rrp_path:
+      type: string
+      label: "Reality resource path"
+```
+
+---
+
+## VII. Kết luận
+
+Authority Boundary trong ROS đảm bảo:
+
+- Luật tối cao nằm tại GO (`t:/hace/.olym/c/ros/*`)
+- HA giữ quyền runtime duy nhất
+- CO & HO chỉ thực thi
+- MCP chỉ là carrier trung tính
+
+Kiến trúc này ngăn:
+
+- Self-authorizing execution
+- Cloud authority drift
+- Federation hijack
+- Canon fragmentation
+

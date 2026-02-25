@@ -1,0 +1,74 @@
+# LINKS - Cross-domain references
+# Object: registry-freeze-protocol
+
+references:
+  constitution:
+    - id: "seal-integrity-law"
+      version: "v1.0"
+      reason: "LOCKED lifecycle enforcement"
+      status: "PENDING"
+    
+    - id: "override-precedence-law"
+      version: "v1.0"
+      reason: "Conflict resolution during freeze"
+      status: "PENDING"
+    
+    - id: "poly-ledger-anchor-law"
+      version: "v1.0"
+      reason: "Snapshot storage in poly-ledger"
+      status: "LOCKED"
+  
+  rule:
+    - id: "append-only-registry-rule"
+      version: "v1.0"
+      reason: "Freeze enforces append-only at FS level"
+      status: "LOCKED"
+    
+    - id: "deterministic-build-rule"
+      version: "v1.0"
+      reason: "Pre-freeze test requirement"
+      status: "PENDING"
+    
+    - id: "lock-status-transition-rule"
+      version: "v1.0"
+      reason: "Status transition validation"
+      status: "DRAFT"
+  
+  protocol:
+    - id: "amo-loader-protocol"
+      version: "v1.0"
+      reason: "AMO loading checks freeze state"
+      status: "PENDING"
+    
+    - id: "alue-seal-protocol"
+      version: "v1.0"
+      reason: "Seal verification uses freeze snapshot"
+      status: "DRAFT"
+    
+    - id: "hrh-mutation-protocol"
+      version: "v1.0"
+      reason: "Mutation requires unfreeze"
+      status: "DRAFT"
+
+used_by:
+  - domain: "engine"
+    object: "T3C"
+    reason: "Cannot enable without FROZEN state"
+  
+  - domain: "engine"
+    object: "Hace"
+    reason: "Cannot enable without FROZEN state"
+  
+  - domain: "spec"
+    object: "clo-loader-spec"
+    reason: "Loader checks .FROZEN file"
+
+blocks:
+  - system: "T3C"
+    until: "Registry frozen"
+    
+  - system: "Hace"
+    until: "Registry frozen + T3C enabled"
+    
+  - action: "Registry mutation"
+    during: "FROZEN state (except hotfix)"

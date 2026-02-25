@@ -1,0 +1,260 @@
+# ROS MASTER CANON LIST (GO Canon Mirror)
+
+```yaml
+# HEADER
+header:
+  id: RC://olympia.master-canon-list.v1
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+  
+metadata:
+  fractal_name: "ros.olympia.master.canon"
+  lazy_type: "registry_manifest"
+  audit_date: "2025-02-23"
+  audit_version: "v1.1.8-crd"
+  total_clo: 55
+  hash_anchor: "{{to_be_sealed}}"
+```
+
+---
+
+## 🎯 EXECUTIVE SUMMARY
+
+**Sau CRD Audit (2025-02-23):**
+- Base từ 52 CLO gốc
+- Bổ sung 5 CLO critical missing
+- Merge 2 CLO trùng domain
+- **→ Canon Set chuẩn: 55 CLO**
+
+### 🚨 Critical Path (P0-P1)
+1. `override-precedence-law.clo` - **Law of Laws**
+2. `authority-boundary-law.clo` - **AS/TI/PI Boundary**
+3. `seal-integrity-law.clo` - **Hash Anchoring Law**
+4. `engine-authority-map.clo` - **Authority Implementation**
+5. `amo-loader-protocol.clo` - **AMO Bootstrap**
+6. `deterministic-build-rule.clo` - **Build-time Determinism**
+7. `registry-freeze-protocol.clo` - **T3C Gate Control**
+
+### ⚖️ Nguyên tắc CRD
+- ❌ Không trùng domain authority
+- ❌ Không thiếu lớp kiểm soát trước T3C/Hace
+- ❌ Không để "spec lấn constitution"
+- ✅ Loader phải có hiến pháp bao bọc
+
+---
+
+## 📂 DOMAIN STRUCTURE
+
+```yaml
+structure:
+  root: "~/.olym/"
+  domains:
+    - constitution    # 11 files (9→11, +2 bổ sung)
+    - engine          # 7 files
+    - engine/particle # 5 files
+    - protocol        # 8 files (7→8, +1 bổ sung)
+    - rule            # 7 files (6→7, +1 bổ sung)
+    - spec            # 8 files
+    - blueprint       # 5 files
+    - term            # 6 files
+```
+
+---
+
+## 1️⃣ CONSTITUTION (11 files) - `~/.olym/constitution/`
+
+**Hiến pháp - Luật bất biến tối thượng**
+
+```yaml
+constitution:
+  locked_files:
+    - file: "ros-charter.clo"
+      status: "LOCKED"
+      weight: 1.00
+      description: "Hiến chương ROS - Văn bản lập hiến"
+      
+    - file: "aa-dec-canon.clo"
+      status: "LOCKED"
+      weight: 1.00
+      description: "Tuyên ngôn AA - Authority Architecture Declaration"
+      
+    - file: "core-four-governance.clo"
+      status: "LOCKED"
+      weight: 1.00
+      description: "Bộ tứ quản trị: AS/TI/PI/HI"
+      
+    - file: "fractal-invariance.clo"
+      status: "LOCKED"
+      weight: 1.00
+      description: "Bất biến fractal - Self-similarity law"
+      
+    - file: "ipo-fes-law.clo"
+      status: "LOCKED"
+      weight: 1.00
+      description: "Luật IPO/FES - Input/Process/Output + Folder Structure"
+      
+    - file: "poly-ledger-anchor-law.clo"
+      status: "LOCKED"
+      weight: 1.00
+      description: "Luật neo sổ cái đa tầng - Poly-ledger anchoring"
+  
+  critical_missing:
+    - file: "override-precedence-law.clo"
+      priority: "P0"
+      status: "MISSING"
+      weight: 1.00
+      description: "Luật phân xử ưu tiên - Law of Laws"
+      rationale: "Hiện không có cơ chế phân xử khi constitution/engine/spec xung đột"
+      
+    - file: "authority-boundary-law.clo"
+      priority: "P0"
+      status: "MISSING"
+      weight: 1.00
+      description: "Luật ranh giới thẩm quyền AS/TI/PI"
+      rationale: "engine-authority-map đang ở sai tầng (engine), phải nằm ở constitution"
+      
+    - file: "seal-integrity-law.clo"
+      priority: "P0"
+      status: "MISSING"
+      weight: 1.00
+      description: "Luật toàn vẹn niêm phong - Hash anchoring + LOCKED lifecycle"
+      rationale: "poly-ledger-anchor-law chưa đủ bao phủ seal integrity"
+  
+  proposed:
+    - file: "era-4-migration-law.clo"
+      priority: "P1"
+      status: "PROPOSED"
+      weight: 1.00
+      description: "Luật di cư Era 4→5"
+      
+    - file: "apa-inheritance-law.clo"
+      priority: "P3"
+      status: "PROPOSED"
+      weight: 1.00
+      description: "Luật thừa kế APA - Authority Propagation Architecture"
+```
+
+---
+
+## 2️⃣ ENGINE (7 files) - `~/.olym/engine/`
+
+**Động cơ - Lò phản ứng thực tại**
+
+```yaml
+engine:
+  existing:
+    - file: "mother-engine-list.clo"
+      status: "EXISTING"
+      description: "Danh sách động cơ mẹ - Mother Engine Registry"
+      
+    - file: "macro-engine-list.clo"
+      status: "EXISTING"
+      description: "Danh sách động cơ vĩ mô - Macro Engine Registry"
+      
+    - file: "rfn-root-functions-name.clo"
+      status: "EXISTING"
+      description: "RFN - Root Function Names"
+      
+    - file: "macro-rust-list.clo"
+      status: "EXISTING"
+      description: "Danh sách macro Rust"
+  
+  draft:
+    - file: "engine-layer-map.clo"
+      status: "DRAFT"
+      description: "Bản đồ tầng động cơ - Layer topology"
+      
+    - file: "engine-namespace-map.clo"
+      status: "DRAFT"
+      description: "Bản đồ không gian tên - Namespace resolution"
+  
+  refactored:
+    - file: "engine-authority-map.clo"
+      priority: "P1"
+      status: "REFACTORED"
+      description: "Bản đồ thẩm quyền động cơ - Implementation only"
+      note: "Tách phần 'law' sang authority-boundary-law.clo (constitution)"
+```
+
+---
+
+## 3️⃣ ENGINE/PARTICLE (5 files) - `~/.olym/engine/particle/`
+
+**Hạt hạ nguyên tử - Sub-atomic particles**
+
+```yaml
+particle:
+  existing:
+    - file: "sub-atom-particles.clo"
+      status: "EXISTING"
+      description: "Danh sách hạt hạ nguyên tử"
+      
+    - file: "surface-particles.clo"
+      status: "EXISTING"
+      description: "Danh sách hạt bề mặt - UI/UX particles"
+  
+  draft:
+    - file: "alien-control-list.clo"
+      status: "DRAFT"
+      description: "Danh sách điều khiển ngoại lai - External deps control"
+      
+    - file: "particle-layer-map.clo"
+      status: "DRAFT"
+      description: "Bản đồ tầng hạt - Particle layer topology"
+  
+  missing:
+    - file: "particle-authority-boundary.clo"
+      priority: "P2"
+      status: "MISSING"
+      description: "Biên giới thẩm quyền hạt"
+      note: "Cũng cần tách law/implementation như engine-authority-map"
+```
+
+---
+
+## 4️⃣ PROTOCOL (8 files) - `~/.olym/protocol/`
+
+**Giao thức - Nghi thức tương tác**
+
+```yaml
+protocol:
+  draft:
+    - file: "atrust-protocol.clo"
+      status: "DRAFT"
+      description: "Giao thức ATrust - Authority Trust Chain"
+      
+    - file: "alue-seal-protocol.clo"
+      status: "DRAFT"
+      description: "Giao thức ALue Seal - Artifact sealing"
+      
+    - file: "rc-bootstrap-protocol.clo"
+      status: "DRAFT"
+      description: "Giao thức bootstrap RC - Reality Core init"
+      
+    - file: "rwl-ownership-protocol.clo"
+      status: "DRAFT"
+      description: "Giao thức sở hữu RWL - Reality World Layer"
+      
+    - file: "hrh-mutation-protocol.clo"
+      status: "DRAFT"
+      description: "Giao thức đột biến HRH - Human Review Hub"
+      
+    - file: "kso-knowledge-soul-protocol.clo"
+      status: "DRAFT"
+      description: "Giao thức linh hồn tri thức - Knowledge Soul Object"
+  
+  critical_missing:
+    - file: "amo-loader-protocol.clo"
+      priority: "P1"
+      status: "MISSING"
+      description: "Giao thức nạp AMO - Artifact Manifest Object loader"
+      rationale: "Tách từ spec, hiện spec đang lấn sang protocol domain"
+      
+    - file: "registry-freeze-protocol.clo"
+      priority: "P1"
+      status: "MISSING"
+      description: "Giao thức đóng băng registry"
+      rationale: "Điều kiện freeze/unfreeze trước khi enable T3C/Hace"
+```
+

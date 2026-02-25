@@ -1,0 +1,698 @@
+# REGISTRY FREEZE PROTOCOL v1.0
+## Giao thức đóng băng registry - T3C/Hace Gate Control
+
+```yaml
+# HEADER
+header:
+  id: RC://protocol.registry-freeze.v1
+  intent: EXECUTE_LOGIC
+  status: LOCKED
+  locale: vi-85
+  
+metadata:
+  fractal_name: "ros.protocol.registry.freeze"
+  lazy_type: "gate_control_protocol"
+  version: "1.0"
+  seal_date: "2025-02-23"
+  hash_anchor: "{{to_be_sealed}}"
+  
+dependencies:
+  constitution:
+    - "seal-integrity-law.clo"
+    - "override-precedence-law.clo"
+  rule:
+    - "append-only-registry-rule.clo"
+    - "deterministic-build-rule.clo"
+```
+
+---
+
+## 🎯 MỤC ĐÍCH
+
+Protocol này định nghĩa **điều kiện và quy trình freeze/unfreeze registry** 
+trước khi enable T3C (Turing-complete) và Hace (autonomous agent).
+
+**Mục tiêu:** Ngăn chặn registry mutation sau khi hệ thống đi vào production mode.
+
+---
+
+## 🔒 FREEZE STATE MODEL
+
+### Registry States
+
+```yaml
+states:
+  BOOTSTRAP:
+    description: "Đang xây dựng, chưa freeze"
+    allowed_operations:
+      - "Tạo CLO mới"
+      - "Version bump"
+      - "Seal files"
+      - "Update master/index.clo"
+    forbidden_operations:
+      - "Enable T3C"
+      - "Enable Hace"
+    
+  FROZEN:
+    description: "Đã đóng băng, ready for production"
+    allowed_operations:
+      - "Read CLO"
+      - "Verify seal"
+      - "Load deterministic"
+    forbidden_operations:
+      - "Create new CLO"
+      - "Version bump"
+      - "Modify sealed files"
+      - "Update index.clo (except hotfix)"
+    
+  HOTFIX:
+    description: "Emergency unfreeze cho critical fix"
+    allowed_operations:
+      - "Create patch version (vX.X.1)"
+      - "Update index.clo pointer"
+      - "Re-seal"
+    forbidden_operations:
+      - "Major/minor version bump"
+      - "Domain mutation"
+    trigger: "Core Four unanimous vote"
+    duration: "24 hours max"
+    
+  DEPRECATED:
+    description: "Registry cũ, đã có successor"
+    allowed_operations:
+      - "Read-only access"
+      - "Audit"
+    forbidden_operations:
+      - "Any mutation"
+```
+
+---
+
+## 📋 FREEZE CONDITIONS
+
+### Pre-freeze Checklist
+
+```yaml
+freeze_conditions:
+  critical_p0:
+    required: true
+    items:
+      - file: "constitution/override-precedence-law.clo"
+        status: "LOCKED"
+        check: "Seal integrity pass"
+        
+      - file: "constitution/authority-boundary-law.clo"
+        status: "LOCKED"
+        check: "Seal integrity pass"
+        
+      - file: "constitution/seal-integrity-law.clo"
+        status: "LOCKED"
+        check: "Seal integrity pass"
+  
+  high_priority_p1:
+    required: true
+    items:
+      - file: "engine/engine-authority-map.clo"
+        status: "LOCKED"
+        check: "Seal integrity pass"
+        
+      - file: "protocol/amo-loader-protocol.clo"
+        status: "LOCKED"
+        check: "Seal integrity pass"
+        
+      - file: "rule/deterministic-build-rule.clo"
+        status: "LOCKED"
+        check: "Seal integrity pass"
+        
+      - file: "rule/append-only-registry-rule.clo"
+        status: "LOCKED"
+        check: "Seal integrity pass"
+  
+  infrastructure:
+    required: true
+    items:
+      - name: "master/index.clo"
+        check: "No DRAFT status objects"
+        
+      - name: "seal.log integrity"
+        check: "All LOCKED files have seal entry"
+        
+      - name: "changelog completeness"
+        check: "All versions documented"
+        
+      - name: "links.ail validity"
+        check: "All references exist"
+  
+  optional_completion:
+    required: false
+    note: "P2-P3 items có thể defer, nhưng phải trong plan"
+```
+
+---
+
+## 🚦 FREEZE PROCESS
+
+### Freeze Workflow
+
+```yaml
+freeze_workflow:
+  step_1:
+    name: "Pre-freeze Audit"
+    action: "Run compliance check"
+    tool: "crd-audit-tool"
+    pass_criteria:
+      - "All P0 LOCKED"
+      - "All P1 LOCKED"
+      - "No DRAFT in master/index.clo"
+      - "Seal integrity 100%"
+  
+  step_2:
+    name: "Snapshot Creation"
+    action: "Create registry snapshot"
+    format: "ros-registry-snapshot-YYYYMMDD.tar.gz"
+    hash: "SHA256"
+    storage: "Poly-ledger anchor"
+  
+  step_3:
+    name: "Freeze Marker"
+    action: "Create .olym/.FROZEN file"
+    content: |
+      FROZEN_DATE: 2025-02-23T10:00:00Z
+      FROZEN_BY: CEO
+      SNAPSHOT_HASH: SHA256:abc123...
+      ENABLED_SYSTEMS: []
+    
+  step_4:
+    name: "Permission Lock"
+    action: "chmod 444 .olym/**/*.clo"
+    effect: "Read-only filesystem"
+  
+  step_5:
+    name: "Enable Systems Gate"
+    action: "Allow T3C/Hace enable"
+    check: ".FROZEN file exists"
+```
+
+---
+
+## 🔓 UNFREEZE PROCESS
+
+### Emergency Unfreeze (Hotfix Only)
+
+```yaml
+unfreeze_workflow:
+  trigger:
+    condition: "Critical security flaw OR data corruption"
+    authority: "Core Four unanimous vote"
+    documentation: "Required hotfix proposal"
+  
+  step_1:
+    name: "Hotfix Proposal"
+    submit_to: "HRH (Human Review Hub)"
+    required_fields:
+      - severity: "CRITICAL"
+      - affected_clo: "constitution/xxx.clo"
+      - root_cause: "..."
+      - proposed_fix: "..."
+      - risk_assessment: "..."
+  
+  step_2:
+    name: "Vote"
+    voters: ["AS", "TI", "PI", "HI"]
+    threshold: "4/4 (unanimous)"
+    timeout: "24 hours"
+  
+  step_3:
+    name: "Temporary Unfreeze"
+    action: "mv .FROZEN .FROZEN.backup"
+    duration: "24 hours max"
+    log: "Record to audit trail"
+  
+  step_4:
+    name: "Hotfix Apply"
+    allowed:
+      - "Create vX.X.1 patch version"
+      - "Update seal.log"
+      - "Update changelog.ail"
+      - "Update index.clo pointer"
+    forbidden:
+      - "Major/minor bump"
+      - "Create new object"
+      - "Domain mutation"
+  
+  step_5:
+    name: "Re-freeze"
+    action: "mv .FROZEN.backup .FROZEN"
+    update: "FROZEN file with hotfix record"
+    verify: "Seal integrity pass"
+```
+
+---
+
+## 🛡️ T3C/HACE GATE CONTROL
+
+### Enable Conditions
+
+```yaml
+enable_gates:
+  t3c_enable:
+    check_file: ".olym/.FROZEN"
+    required: true
+    error_if_missing: "CANNOT_ENABLE_T3C_WITHOUT_FROZEN_REGISTRY"
+    
+    additional_checks:
+      - name: "Deterministic build pass"
+        test: "cargo build --release → same hash"
+        
+      - name: "Zero jitter test"
+        test: "Load time variance < 1ms"
+        
+      - name: "Authority boundary enforced"
+        test: "No AS→TI escalation possible"
+  
+  hace_enable:
+    check_file: ".olym/.FROZEN"
+    required: true
+    error_if_missing: "CANNOT_ENABLE_HACE_WITHOUT_FROZEN_REGISTRY"
+    
+    additional_checks:
+      - name: "T3C already enabled"
+        reason: "Hace depends on T3C"
+        
+      - name: "HRH protocol active"
+        reason: "Mutation governance required"
+        
+      - name: "KSO architecture verified"
+        reason: "Knowledge soul integrity"
+```
+
+---
+
+## 🔍 COMPLIANCE MONITORING
+
+### Continuous Checks (Post-freeze)
+
+```yaml
+monitoring:
+  filesystem_watch:
+    tool: "inotify / FSEvents"
+    watch: ".olym/**/*"
+    alert_on:
+      - "CREATE"
+      - "MODIFY"
+      - "DELETE"
+      - "RENAME"
+    action: "LOG + ALERT + ROLLBACK"
+  
+  seal_verification:
+    frequency: "Every hour"
+    test: "Compare current hash with seal.log"
+    alert_on: "Mismatch"
+  
+  index_integrity:
+    frequency: "Every 10 minutes"
+    test: "master/index.clo unchanged (except hotfix)"
+    alert_on: "Unauthorized update"
+  
+  permission_check:
+    frequency: "Every hour"
+    test: "All .clo files still 444"
+    alert_on: "Permission escalation"
+```
+
+---
+
+## 📊 FREEZE STATE TRANSITIONS
+
+### State Machine
+
+```yaml
+state_machine:
+  transitions:
+    BOOTSTRAP_to_FROZEN:
+      trigger: "Freeze process complete"
+      condition: "All pre-freeze checks pass"
+      reversible: false
+      note: "Normal progression"
+    
+    FROZEN_to_HOTFIX:
+      trigger: "Core Four vote"
+      condition: "Critical issue"
+      reversible: true
+      timeout: "24 hours"
+    
+    HOTFIX_to_FROZEN:
+      trigger: "Patch applied + verified"
+      condition: "Seal integrity restored"
+      automatic: true
+    
+    FROZEN_to_DEPRECATED:
+      trigger: "New registry version"
+      condition: "Migration complete"
+      reversible: false
+      note: "Rare, planned migration only"
+  
+  forbidden_transitions:
+    - from: "FROZEN"
+      to: "BOOTSTRAP"
+      reason: "Cannot unfreeze to bootstrap (use HOTFIX)"
+    
+    - from: "DEPRECATED"
+      to: "FROZEN"
+      reason: "Deprecated is terminal state"
+```
+
+---
+
+## 🚨 VIOLATION HANDLING
+
+### Response Protocols
+
+```yaml
+violations:
+  unauthorized_mutation:
+    detection: "Filesystem watch alert"
+    response:
+      1: "HALT system immediately"
+      2: "Rollback from snapshot"
+      3: "Alert Core Four"
+      4: "Forensic audit"
+      5: "Identify attacker/bug"
+    
+  seal_mismatch:
+    detection: "Hourly seal verification"
+    response:
+      1: "Isolate affected CLO"
+      2: "Compare with poly-ledger anchor"
+      3: "Restore from snapshot if corrupted"
+      4: "Log incident"
+    
+  permission_escalation:
+    detection: "Permission check alert"
+    response:
+      1: "Reset to 444"
+      2: "Audit chmod history"
+      3: "Check for privilege exploit"
+    
+  index_tampering:
+    detection: "Index integrity check"
+    response:
+      1: "Restore index.clo from snapshot"
+      2: "Verify all pointers"
+      3: "Audit trail review"
+```
+
+---
+
+## 📁 FREEZE MARKER FORMAT
+
+### .olym/.FROZEN File
+
+```yaml
+frozen_file_format:
+  location: ".olym/.FROZEN"
+  format: |
+    # REGISTRY FROZEN
+    # DO NOT MODIFY THIS FILE
+    
+    FROZEN_DATE: 2025-02-23T10:00:00Z
+    FROZEN_BY: CEO
+    SNAPSHOT_HASH: SHA256:abc123def456...
+    
+    ENABLED_SYSTEMS:
+      - name: T3C
+        enabled_at: null
+      - name: HACE
+        enabled_at: null
+    
+    HOTFIX_HISTORY:
+      # Empty on initial freeze
+    
+    VERIFICATION:
+      last_check: 2025-02-23T10:05:00Z
+      status: PASS
+      checker: crd-audit-tool
+```
+
+---
+
+## 🔐 SNAPSHOT MANAGEMENT
+
+### Snapshot Strategy
+
+```yaml
+snapshots:
+  creation:
+    trigger: "Before freeze"
+    format: "ros-registry-YYYYMMDD-HHmmss.tar.gz"
+    includes:
+      - ".olym/**/*"
+      - "master/master.ail"
+      - "master/index.clo"
+    compression: "gzip -9"
+    hash: "SHA256"
+  
+  storage:
+    primary: "Poly-ledger anchor"
+    backup: "Offsite cold storage"
+    retention: "Indefinite"
+  
+  verification:
+    frequency: "Monthly"
+    test: "Extract + hash check"
+    action_on_fail: "Alert + re-snapshot"
+  
+  restore:
+    trigger: "Corruption detected OR hotfix rollback"
+    process:
+      1: "Extract snapshot"
+      2: "Verify hash"
+      3: "Compare with current state"
+      4: "Restore affected files"
+      5: "Re-seal"
+```
+
+---
+
+## 🧪 PRE-FREEZE TESTING
+
+### Test Suite
+
+```yaml
+testing:
+  deterministic_load:
+    test: "Load .olym 100 times"
+    expect: "Same order, same timing (±1ms)"
+    
+  seal_integrity:
+    test: "Verify all seal.log entries"
+    expect: "100% match with file hashes"
+    
+  index_validity:
+    test: "Check all pointers resolve"
+    expect: "No broken references"
+    
+  authority_boundary:
+    test: "Attempt AS→TI escalation"
+    expect: "REJECTED by engine-authority-map"
+    
+  append_only_enforcement:
+    test: "Attempt to overwrite v1.0.clo"
+    expect: "REJECTED by append-only-registry-rule"
+  
+  performance:
+    test: "Load time benchmark"
+    expect: "< 100ms for full registry"
+    target: "Zero jitter guarantee"
+```
+
+---
+
+## 📐 INTEGRATION WITH OTHER PROTOCOLS
+
+```yaml
+integration:
+  amo_loader_protocol:
+    relationship: "AMO loading respects freeze state"
+    rule: "Cannot load AMO if registry not frozen"
+    
+  atrust_protocol:
+    relationship: "Trust chain anchored at freeze snapshot"
+    rule: "Post-freeze hash is trust root"
+    
+  hrh_mutation_protocol:
+    relationship: "Mutations require unfreeze → hotfix flow"
+    rule: "No mutation in FROZEN state"
+    
+  alue_seal_protocol:
+    relationship: "Seal verification uses freeze snapshot"
+    rule: "Reference hash from .FROZEN file"
+```
+
+---
+
+## 🎯 SUCCESS CRITERIA
+
+### Freeze Completion Checklist
+
+```yaml
+success_criteria:
+  file_existence:
+    - ".olym/.FROZEN exists"
+    - "Snapshot in poly-ledger"
+    - "All P0-P1 CLO sealed"
+  
+  permission:
+    - "All .clo files → 444"
+    - "Directories → 555"
+    - "Root cannot write (enforced)"
+  
+  monitoring:
+    - "Filesystem watch active"
+    - "Seal verification running"
+    - "Audit log enabled"
+  
+  gate_ready:
+    - "T3C can query .FROZEN"
+    - "Hace can query .FROZEN"
+    - "Both systems aware of freeze"
+  
+  documentation:
+    - "Freeze event logged"
+    - "Snapshot documented"
+    - "Team notified"
+```
+
+---
+
+## 🚀 POST-FREEZE OPERATIONS
+
+### Allowed Operations in FROZEN State
+
+```yaml
+allowed_operations:
+  read:
+    - "cat v1.0.clo"
+    - "view seal.log"
+    - "grep links.ail"
+  
+  verify:
+    - "sha256sum v1.0.clo"
+    - "Check seal.log match"
+  
+  load:
+    - "CLO loader read registry"
+    - "Deterministic load"
+    - "Cache building"
+  
+  audit:
+    - "Forensic review"
+    - "Compliance check"
+    - "Performance profiling"
+```
+
+### Forbidden Operations in FROZEN State
+
+```yaml
+forbidden_operations:
+  mutation:
+    - "echo >> v1.0.clo"
+    - "vi v1.0.clo"
+    - "rm v1.0.clo"
+    - "mv object-a object-b"
+  
+  creation:
+    - "touch new-object.clo"
+    - "mkdir new-domain"
+  
+  index_update:
+    - "Update active_version (except hotfix)"
+    - "Add new object entry"
+```
+
+---
+
+## 📊 METRICS & KPI
+
+```yaml
+metrics:
+  freeze_readiness:
+    formula: "(Sealed CLO / Total Required CLO) × 100%"
+    target: "100%"
+    current: "To be measured"
+  
+  seal_integrity_rate:
+    formula: "(Valid seals / Total seals) × 100%"
+    target: "100%"
+    alert_threshold: "< 99.9%"
+  
+  zero_jitter_compliance:
+    formula: "stddev(load_time)"
+    target: "< 1ms"
+    measurement: "100 consecutive loads"
+  
+  hotfix_frequency:
+    target: "< 1 per quarter"
+    track: "Number of FROZEN→HOTFIX transitions"
+  
+  snapshot_integrity:
+    formula: "(Verified snapshots / Total snapshots) × 100%"
+    target: "100%"
+    frequency: "Monthly check"
+```
+
+---
+
+## 📚 REFERENCES
+
+```yaml
+references:
+  constitution:
+    - "seal-integrity-law.clo"
+    - "override-precedence-law.clo"
+    - "poly-ledger-anchor-law.clo"
+  
+  rule:
+    - "append-only-registry-rule.clo"
+    - "deterministic-build-rule.clo"
+    - "lock-status-transition-rule.clo"
+  
+  protocol:
+    - "amo-loader-protocol.clo"
+    - "alue-seal-protocol.clo"
+    - "hrh-mutation-protocol.clo"
+  
+  related_docs:
+    - "Fractal CLO Folder Structure v1.0"
+    - "ROS Master Canon List"
+```
+
+---
+
+## 💬 GOVERNANCE NOTE
+
+```yaml
+governance:
+  compiler: "CGE (Chief Governance Engine)"
+  authority: "Core Four (AS/TI/PI/HI)"
+  
+  freeze_authority:
+    initial_freeze: "CEO authorization required"
+    hotfix_vote: "Core Four unanimous (4/4)"
+    deprecation: "Core Four + stakeholder consensus"
+  
+  emergency_override:
+    condition: "System compromise OR data loss"
+    authority: "HI (Human Intelligence) only"
+    process: "Document → Vote → Execute → Audit"
+  
+  principle:
+    message: "Quân tử - không vượt quyền HI"
+    rule: "Freeze bảo vệ integrity, HI bảo vệ freeze"
+```
+
+---
+
+**END OF REGISTRY FREEZE PROTOCOL v1.0**
+*Sealed: 2025-02-23*
+*Hash: {{to_be_computed}}*
