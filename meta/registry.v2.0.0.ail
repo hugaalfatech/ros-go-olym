@@ -1,0 +1,254 @@
+```yaml
+# HEADER (100% EN)
+header:
+  id: OLYM://registry.v2.0.0
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+  version: 2.0.0
+  alignment:
+    - OLYM://charter.v2.0.0
+    - OLYM://structure.rule.v1.1.0
+  description: "Machine-verifiable canonical graph registry"
+
+metadata:
+  model: "canonical_directed_graph"
+  plane_aware: true
+  deterministic: true
+  hash_anchor: "{{to_be_sealed}}"
+```
+
+---
+
+# OLYM Registry v2.0
+
+**Machine-Verifiable Canonical Graph**
+
+Registry v2 không chỉ là danh sách artifact, mà là **đồ thị chuẩn hóa (directed graph)** có thể kiểm chứng bằng máy.
+
+---
+
+# I. Core Design Principles
+
+1. Mỗi artifact là một **node**.
+2. Quan hệ giữa artifact là **directed edge**.
+3. Mọi node phải có:
+
+   * Canonical ID
+   * Version
+   * Hash
+   * Branch (c/g/s/k/x/meta)
+4. Đồ thị phải:
+
+   * Acyclic (không vòng lặp hiến định)
+   * Deterministic
+   * Plane-neutral
+
+---
+
+# II. Graph Schema
+
+```yaml
+graph:
+  version: 2
+  namespace_root: "go:/olym/"
+
+  nodes:
+    - id: "OLYM://charter.v2.0.0"
+      branch: "g"
+      path: "go:/olym/g/charter/olym-charter-v2.0.0.ail"
+      version: "2.0.0"
+      hash: "{{sha256}}"
+      status: "ACTIVE"
+      plane_origin: "gh"
+
+    - id: "OLYM://constitutional.court.model.v1.0.0"
+      branch: "c"
+      path: "go:/olym/c/constitutional-court-model.v1.0.0.ail"
+      version: "1.0.0"
+      hash: "{{sha256}}"
+      status: "ACTIVE"
+      plane_origin: "gh"
+
+    - id: "OLYM://structure.rule.v1.1.0"
+      branch: "meta"
+      path: "go:/olym/olym-structure-rule.ail"
+      version: "1.1.0"
+      hash: "{{sha256}}"
+      status: "ACTIVE"
+      plane_origin: "gh"
+
+  edges:
+    - from: "OLYM://charter.v2.0.0"
+      to: "OLYM://structure.rule.v1.1.0"
+      type: "aligns_with"
+
+    - from: "OLYM://constitutional.court.model.v1.0.0"
+      to: "OLYM://charter.v2.0.0"
+      type: "derives_authority_from"
+```
+
+---
+
+# III. Node Specification
+
+```yaml
+node_schema:
+  required_fields:
+    - id
+    - branch
+    - path
+    - version
+    - hash
+    - status
+
+  branch_enum:
+    - c
+    - g
+    - s
+    - k
+    - x
+    - meta
+    - release
+```
+
+---
+
+# IV. Edge Types
+
+```yaml
+edge_types:
+  - derives_authority_from
+  - supersedes
+  - aligns_with
+  - amends
+  - depends_on
+  - deprecated_by
+```
+
+Semantics:
+
+* `derives_authority_from` → quyền lực hiến định
+* `supersedes` → thay thế version
+* `aligns_with` → tương thích cấu trúc
+* `amends` → sửa đổi
+* `depends_on` → phụ thuộc kỹ thuật
+* `deprecated_by` → trạng thái lịch sử
+
+---
+
+# V. Verification Rules
+
+```yaml
+verification:
+  must_be_acyclic: true
+  no_missing_node_reference: true
+  no_cross_branch_violation: true
+  hash_required: true
+  deterministic_sort: "lexicographic_by_id"
+```
+
+---
+
+## Acyclic Rule
+
+Không được tồn tại chu trình:
+
+```
+A → B → C → A
+```
+
+---
+
+## Authority Flow Constraint
+
+* `c/` không được derive authority từ `g/` hoặc `s/`
+* `g/` có thể derive từ `c/`
+* `s/` có thể depend_on `g/` nhưng không override `c/`
+
+---
+
+# VI. Plane Awareness
+
+```yaml
+plane_policy:
+  logical_root: "go:/olym/"
+  resolution_order:
+    - ha
+    - ho
+    - gh
+  registry_node_must_use_logical_path: true
+  physical_plane_metadata_optional: true
+```
+
+Registry chỉ dùng logical path; plane_origin chỉ là metadata.
+
+---
+
+# VII. Canonical Graph Integrity
+
+```yaml
+integrity:
+  graph_hash: "{{sha256_of_sorted_nodes_and_edges}}"
+  seal_required_for_release: true
+  immutable_after_tag: true
+```
+
+Graph hash tính trên:
+
+* Nodes sorted by id
+* Edges sorted by (from,to,type)
+
+---
+
+# VIII. Example Canon Graph (Minimal)
+
+```yaml
+graph:
+  nodes:
+    - id: "OLYM://structure.rule.v1.1.0"
+      branch: "meta"
+      version: "1.1.0"
+      hash: "abc123"
+      status: "ACTIVE"
+
+    - id: "OLYM://charter.v2.0.0"
+      branch: "g"
+      version: "2.0.0"
+      hash: "def456"
+      status: "ACTIVE"
+
+  edges:
+    - from: "OLYM://charter.v2.0.0"
+      to: "OLYM://structure.rule.v1.1.0"
+      type: "aligns_with"
+```
+
+---
+
+# IX. Release Integration
+
+Khi tạo bundle tại:
+
+```
+go:/olym/release/vX.Y.Z/
+```
+
+Phải chứa:
+
+* registry snapshot
+* graph_hash
+* sealed index
+
+---
+
+# X. Effects
+
+Registry v2 mang lại:
+
+* Machine-verifiable constitutional graph
+* Conflict detection tự động
+* Version lineage rõ ràng
+* Plane-aware nhưng logical-first
+* Chuẩn bị cho automated constitutional validation
+

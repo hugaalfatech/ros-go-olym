@@ -1,174 +1,308 @@
-# OLYM Structure Rule – Government Olympia Layout Canon
+# OLYM Structure Rule v1.1
+
+**Government Olympia Layout Canon – Plane-aware & Merge-aware**
 
 ```yaml
+# HEADER (100% EN)
 header:
-  id: ROS://olym.structure-rule.v1
+  id: OLYM://structure.rule.v1.1.0
   intent: DECLARE_SCHEMA
   status: ACTIVE
   locale: vi-85
-  
+  version: 1.1.0
+  supersedes: OLYM://structure.rule.v1.0.0
+  ratification: PENDING_COUNCIL_SEAL
+
 metadata:
-  fractal_name: "ros.olympia.structure"
+  fractal_name: "olympia.structure"
   lazy_type: "olym_structure_rule"
-  version: "1.0.0"
+  plane_model: "tri-plane-merge"
   hash_anchor: "{{to_be_sealed}}"
 ```
 
 ---
 
-## I. Purpose
+# I. Purpose
 
-Quy tắc này chuẩn hóa cấu trúc thư mục cho Government Olympia (`go:/.olym/*`)
-để tất cả AIA Cogen có thể nhận biết vai trò từng nhánh mà không cần suy đoán.
+Quy tắc này chuẩn hóa cấu trúc và cơ chế hợp nhất (merge) của Government Olym dưới mô hình đa-plane (gh / ha / ho), nhằm đảm bảo:
+
+* Deterministic namespace resolution
+* Không nhập nhằng giữa physical plane và logical plane
+* Không suy đoán ngoài layout được định nghĩa
+* Phù hợp với URI chuẩn `go:/olym/*`
 
 ---
 
-## II. Top-level Layout
+# II. Namespace & Plane Model
+
+## 1. Logical Namespace
 
 ```yaml
-layout:
-  root: "go:/.olym/"
-  branches:
-    - id: "c"
-      path: "go:/.olym/c/"
-      role: "Constitutional canon – luật tối cao"
-    - id: "g"
-      path: "go:/.olym/g/"
-      role: "Governance instruments – policy, charter, rule, stage"
-    - id: "s"
-      path: "go:/.olym/s/"
-      role: "Standards & Specifications – machine-binding standards"
-    - id: "k"
-      path: "go:/.olym/k/"
-      role: "Knowledge canon – blueprint, stage model, domain knowledge"
-    - id: "x"
-      path: "go:/.olym/x/"
-      role: "Extensions – experimental/non-core/interop"
-    - id: "release"
-      path: "go:/.olym/release/"
-      role: "Sealed bundles – versioned, immutable"
-    - id: "meta"
-      path: "go:/.olym/meta/"
-      role: "Meta-governance – governance model, amendment, compatibility"
+logical_root: "go:/olym/"
+```
+
+`go:/olym/*` là **logical merged namespace**, không phải physical storage.
+
+---
+
+## 2. Plane Definitions
+
+```yaml
+planes:
+  gh:
+    path: "go:/gh/olym/"
+    role: "Public canonical cloud (GitHub baseline)"
+    authority_level: "baseline"
+    mutable: true
+
+  ha:
+    path: "go:/ha/olym/"
+    role: "Local RRP override (Hace device)"
+    authority_level: "local_override"
+    mutable: true
+
+  ho:
+    path: "go:/ho/olym/"
+    role: "Cloud mirror / distributed host"
+    authority_level: "cloud_overlay"
+    mutable: true
+
+  go:
+    path: "go:/olym/"
+    role: "Logical merged namespace"
+    physical: false
 ```
 
 ---
 
-## III. Branch Semantics
+# III. Deterministic Merge Model
+
+```yaml
+merge_model:
+  logical_root: "go:/olym/"
+  resolution_order:
+    - ha
+    - ho
+    - gh
+  strategy: "first_match_wins"
+  deterministic: true
+  fallback_required: true
+```
+
+## Semantics
+
+1. Khi truy cập `go:/olym/<path>`:
+
+   * Kiểm tra `go:/ha/olym/<path>`
+   * Nếu không tồn tại → kiểm tra `go:/ho/olym/<path>`
+   * Nếu không tồn tại → kiểm tra `go:/gh/olym/<path>`
+2. Không được merge nội dung nhiều plane vào cùng một file.
+3. Không được tạo ambiguity.
+4. Không được thay đổi thứ tự resolution.
+
+---
+
+# IV. Physical Mapping Rules
+
+```yaml
+physical_mapping:
+  gh:
+    raw_base: " `https://raw.githubusercontent.com/hugaalfatech/ros-go-olym/refs/heads/main/` "
+  ha:
+    local_root: "t:/hace/.olym/"
+  ho:
+    cloud_root: "ho:/olym/"
+```
+
+---
+
+# V. Top-level Layout (Logical)
+
+```yaml
+layout:
+  root: "go:/olym/"
+  branches:
+    - id: "c"
+      role: "Constitutional canon – luật tối cao"
+      mandatory_for_runtime: true
+
+    - id: "g"
+      role: "Governance instruments – policy/charter/rule/stage"
+      mandatory_for_runtime: true
+
+    - id: "s"
+      role: "Standards & Specifications – machine-binding contracts"
+      mandatory_for_runtime: true
+
+    - id: "k"
+      role: "Knowledge canon – blueprint & domain knowledge"
+      mandatory_for_runtime: false
+
+    - id: "x"
+      role: "Extensions – experimental/interop/profile"
+      mandatory_for_runtime: false
+
+    - id: "release"
+      role: "Sealed version bundles"
+      immutable: true
+
+    - id: "meta"
+      role: "Meta-governance of Olympia itself"
+```
+
+Không được tạo thêm branch ngoài tập trên.
+
+---
+
+# VI. Branch Semantics
 
 ```yaml
 semantics:
   c:
-    description: "Authority law – constitutional canon"
-    mandatory_for_runtime: true
-    can_define_byte_layout: false
+    authority: "constitutional"
+    may_override: []
+    change_requires: "constitutional_amendment_via_g"
+
   g:
-    description: "Governance instruments – policy/charter/rule/stage"
-    mandatory_for_runtime: true
-    can_change_c_or_s: false
-    can_define_amendment_process: true
+    authority: "governance"
+    may_override: ["process", "policy"]
+    may_modify: ["s"]
+    may_modify_c: false
+
   s:
-    description: "Technical standards & specs – machine contracts"
-    mandatory_for_runtime: true
+    authority: "technical_contract"
     can_define_byte_layout: true
+    must_not_override_c: true
+
   k:
-    description: "Knowledge canon – blueprint & domain models"
-    mandatory_for_runtime: false
+    authority: "knowledge"
+    cannot_override_any: true
+
   x:
-    description: "Extensions – draft/interop/profile/legacy modules"
-    mandatory_for_runtime: false
+    authority: "experimental"
+    requires_profile_flag: true
+
   release:
-    description: "Versioned sealed bundles of c + s (+ optional k/x)"
+    authority: "sealed_bundle"
+    immutable: true
+
   meta:
-    description: "Meta rules for Olympia itself"
+    authority: "self_governance"
+    may_amend_structure_rule: true
 ```
 
 ---
 
-## IV. Canonical Mapping (Local RRP)
-
-```yaml
-rrp:
-  local_root: "t:/hace/.olym/"
-  mapping:
-    go:/.olym/ -> "t:/hace/.olym/"
-    go:/.olym/c/ -> "t:/hace/.olym/c/"
-    go:/.olym/g/ -> "t:/hace/.olym/g/"
-    go:/.olym/s/ -> "t:/hace/.olym/s/"
-    go:/.olym/k/ -> "t:/hace/.olym/k/"
-    go:/.olym/x/ -> "t:/hace/.olym/x/"
-    go:/.olym/release/ -> "t:/hace/.olym/release/"
-    go:/.olym/meta/ -> "t:/hace/.olym/meta/"
-```
-
----
-
-## V. Compact Namespaces
+# VII. Compact Namespaces
 
 ```yaml
 compact_namespaces:
-  gov_c: "//gov/c/*"  # -> go:/.olym/c/*
-  gov_g: "//gov/g/*"  # -> go:/.olym/g/*
-  gov_s: "//gov/s/*"  # -> go:/.olym/s/*
-  gov_k: "//gov/k/*"  # -> go:/.olym/k/*
-  gov_x: "//gov/x/*"  # -> go:/.olym/x/*
+  gov_c: "//gov/c/*"
+  gov_g: "//gov/g/*"
+  gov_s: "//gov/s/*"
+  gov_k: "//gov/k/*"
+  gov_x: "//gov/x/*"
+```
+
+Mapping:
+
+```
+"//gov/c/*" → "go:/olym/c/*"
 ```
 
 ---
 
-## VI. Authority & Stability Levels
+# VIII. Runtime Constraints
+
+```yaml
+runtime_constraints:
+  go_plane:
+    logical_only: true
+    contains_runtime_code: false
+    contains_private_keys: false
+    execution_allowed: false
+
+  ha_plane:
+    must_read_from:
+      - "go:/olym/c/"
+      - "go:/olym/s/"
+    may_read_from:
+      - "go:/olym/k/"
+      - "go:/olym/x/"
+    must_not_execute:
+      - "go:/olym/*"
+```
+
+---
+
+# IX. Stability & Authority Levels
 
 ```yaml
 stability:
   c:
     stability: "very_stable"
-    change_requires: "constitutional_amendment_via_g"
   s:
     stability: "stable"
-    change_requires: "governance_process_via_g"
   g:
     stability: "stable"
-    change_requires: "core_four_consensus"
   k:
     stability: "evolvable"
-    change_requires: "domain_owner_approval"
   x:
     stability: "experimental"
-    change_requires: "profile_opt_in + governance_flag"
 ```
 
 ---
 
-## VII. Runtime Constraints
+# X. Integrity & Consistency Rules
 
 ```yaml
-runtime_constraints:
-  go_plane:
-    may_contain_runtime_code: false
-    may_contain_private_runtime_keys: false
-    may_contain_execution_engine: false
-  ha_plane:
-    must_read_from:
-      - "go:/.olym/c/"
-      - "go:/.olym/s/"
-    may_read_from:
-      - "go:/.olym/k/"
-      - "go:/.olym/x/"
+integrity_rules:
+  no_cross_plane_mutation: true
+  no_partial_merge: true
+  no_runtime_dependency: true
+  canonical_id_required: true
+  version_required: true
 ```
 
 ---
 
-## VIII. AIA Cogen Guidance
+# XI. AIA Cogen Guidance
 
-- Khi load Government Olympia:
-  - Đọc `olym-structure-rule.ail` để hiểu layout.
-  - Không suy đoán thêm thư mục ngoài tập: `c/ g/ s/ k/ x/ release/ meta/`.
-- Khi cần tìm:
-  - Luật tối cao → `c/`
-  - Chuẩn máy → `s/`
-  - Tri thức & blueprint → `k/`
-  - Governance → `g/`
-  - Extension/experimental → `x/`
+* Khi load Government Olym:
 
-Quy tắc này là điểm vào duy nhất để AIA Cogen khám phá cấu trúc Olympia.
+  1. Load `go:/olym/olym-structure-rule.ail`
+  2. Áp dụng merge_model
+  3. Không truy cập ngoài branch chuẩn
+* Không suy đoán thư mục ẩn
+* Không override resolution_order
 
+---
+
+# XII. Amendment Rule
+
+```yaml
+amendment:
+  requires_major_version: true
+  authority: "meta + council_seal"
+  backward_compatibility_required: true
+```
+
+---
+
+# XIII. Canonical Declaration
+
+OLYM Structure Rule v1.1 thiết lập:
+
+* Logical namespace tách khỏi physical plane
+* Deterministic merge order
+* Plane-aware governance
+* Zero ambiguity resolution
+* Runtime isolation tuyệt đối
+
+---
+
+Nếu anh muốn bước tiếp theo, tôi có thể:
+
+* Viết **OLYM Namespace Resolution Spec v1.0 (formal algorithmic proof style)**
+* Hoặc thiết kế **OLYM Merge Verifier Schema (machine-checkable)**
+* Hoặc xây dựng luôn **OLYM Release Bundle Spec v1.0 (sealed artifact model)**

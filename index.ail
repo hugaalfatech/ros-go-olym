@@ -1,0 +1,103 @@
+```yaml
+# HEADER (100% EN)
+header:
+  id: OLYM://index.v1.0.0
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+  version: 1.0.0
+  description: "Simple artifact index for Olym logical namespace"
+
+metadata:
+  namespace_root: "go:/olym/"
+  model: "logical_listing"
+  auto_merge: true
+  plane_aware: true
+```
+
+---
+
+# OLYM Index v1.0.0
+
+**Logical Artifact Listing (Plane-aware)**
+
+Chỉ mục này dùng để liệt kê các artifact chính danh trong `go:/olym/*`.
+Đây là logical index — áp dụng merge model (ha → ho → gh).
+
+Không có hiệu lực quy phạm riêng; chỉ phục vụ khám phá và tra cứu.
+
+---
+
+## I. Canonical Artifacts
+
+```yaml
+artifacts:
+
+  constitutional:
+    - id: OLYM://charter.v2.0.0
+      path: "go:/olym/g/charter/olym-charter-v2.0.0.ail"
+      status: ACTIVE
+
+    - id: OLYM://constitutional.court.model.v1.0.0
+      path: "go:/olym/c/constitutional-court-model.v1.0.0.ail"
+      status: ACTIVE
+
+  structure:
+    - id: OLYM://structure.rule.v1.1.0
+      path: "go:/olym/olym-structure-rule.ail"
+      status: ACTIVE
+
+  governance:
+    - id: OLYM://index.v1.0.0
+      path: "go:/olym/index.ail"
+      status: ACTIVE
+
+  specifications: []
+
+  deprecated: []
+
+  draft: []
+```
+
+---
+
+## II. Listing Rules
+
+```yaml
+rules:
+  must_use_logical_namespace: true
+  no_physical_plane_reference: true
+  status_required: true
+  id_required: true
+  plane_resolution: "ha -> ho -> gh"
+```
+
+---
+
+## III. Extension Policy
+
+* Artifact mới phải được thêm vào index.
+* Artifact DEPRECATED phải chuyển sang nhóm `deprecated`.
+* Không xoá artifact khỏi index; chỉ đổi trạng thái.
+* Index không thay thế Canon Registry nếu tồn tại.
+
+---
+
+## IV. Integrity
+
+```yaml
+integrity:
+  deterministic_listing: true
+  no_runtime_dependency: true
+  no_execution: true
+```
+
+---
+
+File này giữ đơn giản, nhưng:
+
+* Plane-aware
+* Merge-consistent
+* Không phụ thuộc physical location
+* Phù hợp Charter v2.0 và Structure Rule v1.1
+

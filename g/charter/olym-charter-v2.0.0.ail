@@ -1,0 +1,302 @@
+```yaml
+# HEADER (100% EN)
+header:
+  id: OLYM://charter.v2.0.0
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+  version: 2.0.0
+  supersedes:
+    - OLYM://charter.v1.0.0
+  alignment:
+    - OLYM://structure.rule.v1.1.0
+  ratification: PENDING_COUNCIL_SEAL
+
+metadata:
+  doctrine: "plane_native_governance"
+  namespace_model: "tri_plane_merge"
+  constitutional_level: "supreme"
+  hash_anchor: "{{to_be_sealed}}"
+```
+
+---
+
+# OLYM CHARTER v2.0.0
+
+**Plane-Native Government Constitution**
+
+---
+
+# I. CONSTITUTIONAL FOUNDATION
+
+### Clause 1 — Sovereign Identity
+
+Olym là Hiến pháp tri thức chính danh của hệ sinh thái, vận hành trên mô hình đa-plane hợp nhất.
+
+### Clause 2 — Logical Supremacy
+
+Namespace `go:/olym/*` là không gian logic tối cao; không phải storage vật lý.
+
+### Clause 3 — Plane Recognition
+
+Olym tồn tại trên ba plane vật lý:
+
+* gh (baseline canonical cloud)
+* ha (local override plane)
+* ho (distributed cloud overlay)
+
+### Clause 4 — Deterministic Merge Doctrine
+
+Logical namespace được hình thành bởi hợp nhất có thứ tự:
+**ha → ho → gh**.
+Thứ tự này là quy phạm hiến định.
+
+### Clause 5 — Non-Executable Nature
+
+Olym không chứa runtime engine, private key, hoặc logic thực thi.
+
+---
+
+# II. STRUCTURAL LAW
+
+### Clause 6 — Mandatory Logical Root
+
+Tất cả artifact chính danh phải tồn tại trong `go:/olym/`.
+
+### Clause 7 — Branch Canon
+
+Các nhánh hợp lệ:
+
+* `c/` Constitutional canon
+* `g/` Governance instruments
+* `s/` Standards & specs
+* `k/` Knowledge canon
+* `x/` Extensions
+* `release/` Sealed bundles
+* `meta/` Self-governance
+
+Không được tạo nhánh ngoài tập này.
+
+### Clause 8 — Plane Transparency
+
+Artifact phải có thể truy vết plane nguồn (gh/ha/ho).
+
+### Clause 9 — Override Legitimacy
+
+Override ở ha hoặc ho không làm thay đổi baseline gh, chỉ thay đổi logical view.
+
+### Clause 10 — No Partial Merge
+
+Một artifact không được hợp nhất từ nhiều plane.
+
+---
+
+# III. AUTHORITY ARCHITECTURE
+
+### Clause 11 — Constitutional Supremacy
+
+Nhánh `c/` có giá trị cao nhất.
+
+### Clause 12 — Governance Scope
+
+Nhánh `g/` có quyền định nghĩa quy trình sửa đổi và điều phối `s/`.
+
+### Clause 13 — Standard Integrity
+
+Nhánh `s/` định nghĩa machine-binding contract; không được sửa đổi `c/`.
+
+### Clause 14 — Meta Authority
+
+Nhánh `meta/` có quyền đề xuất sửa đổi Structure Rule và Charter.
+
+### Clause 15 — Council Seal
+
+Mọi sửa đổi hiến định yêu cầu Council Seal.
+
+---
+
+# IV. MERGE CONSTITUTION
+
+### Clause 16 — Resolution Order Immutable
+
+Thứ tự resolution không được thay đổi trừ khi Major Amendment.
+
+### Clause 17 — Determinism Guarantee
+
+Cùng input namespace phải cho cùng logical result.
+
+### Clause 18 — Plane Isolation
+
+Plane không được can thiệp trực tiếp vào plane khác.
+
+### Clause 19 — Override Scope Limit
+
+Override chỉ áp dụng cho path tương ứng; không có wildcard toàn hệ.
+
+### Clause 20 — Fallback Integrity
+
+Nếu artifact không tồn tại ở ha/ho, phải fallback về gh.
+
+---
+
+# V. VERSION & SEAL LAW
+
+### Clause 21 — SemVer Mandate
+
+Olym dùng Semantic Versioning.
+
+### Clause 22 — Major Amendment
+
+Major khi thay đổi cấu trúc plane hoặc resolution order.
+
+### Clause 23 — Minor Amendment
+
+Minor khi bổ sung điều khoản không phá vỡ hiến pháp.
+
+### Clause 24 — Patch
+
+Patch cho correction phi cấu trúc.
+
+### Clause 25 — Immutable Tag
+
+Tag đã seal là bất biến.
+
+---
+
+# VI. DISTRIBUTION DOCTRINE
+
+### Clause 26 — Baseline Canon
+
+gh plane là baseline public canonical distribution.
+
+### Clause 27 — Local Sovereignty
+
+ha plane có quyền override cục bộ.
+
+### Clause 28 — Cloud Overlay
+
+ho plane phục vụ phân tán và mirror.
+
+### Clause 29 — Logical Neutrality
+
+`go:/olym/` không phụ thuộc một nhà cung cấp vật lý duy nhất.
+
+### Clause 30 — Integrity Recommendation
+
+Hash verification được khuyến nghị khi cross-plane sync.
+
+---
+
+# VII. GOVERNANCE PROCESS
+
+### Clause 31 — Structured Proposal
+
+Mọi đề xuất phải ở dạng `.ail`.
+
+### Clause 32 — Dual Review
+
+Ít nhất hai vai trò độc lập phải review.
+
+### Clause 33 — Conflict Disclosure
+
+Phải công bố xung đột lợi ích.
+
+### Clause 34 — Amendment Path
+
+Amendment hiến pháp phải thông qua nhánh `meta/` trước khi seal.
+
+### Clause 35 — Deprecation
+
+Artifact bị thay thế phải chuyển sang trạng thái DEPRECATED, không xóa.
+
+---
+
+# VIII. STABILITY DOCTRINE
+
+### Clause 36 — Stability Hierarchy
+
+`c/` > `s/` > `g/` > `k/` > `x/`
+
+### Clause 37 — Evolution Discipline
+
+Tri thức có thể tiến hóa nhưng không phá vỡ determinism.
+
+### Clause 38 — Clarity Mandate
+
+Điều khoản phải rõ ràng, không đa nghĩa.
+
+### Clause 39 — No Runtime Drift
+
+Runtime không được sửa đổi Olym plane.
+
+### Clause 40 — Authority Gravity
+
+Mọi quyết định phải tôn trọng trật tự thẩm quyền và plane model.
+
+---
+
+# IX. SUPREMACY & AMENDMENT
+
+### Clause 41 — Constitutional Supremacy
+
+Charter này có giá trị cao nhất trong Olym governance.
+
+### Clause 42 — Structure Alignment
+
+Charter phải luôn align với Structure Rule hiện hành.
+
+### Clause 43 — Meta Revision
+
+Structure Rule sửa đổi lớn yêu cầu Charter Major update.
+
+### Clause 44 — Non-Retroactive Principle
+
+Amendment không có hiệu lực hồi tố trừ khi được quy định rõ.
+
+### Clause 45 — Canonical Continuity
+
+Mọi evolution phải giữ continuity của logical namespace.
+
+---
+
+# TECHNICAL CONSTITUTION BLOCK
+
+```yaml
+constitution:
+  namespace:
+    logical: "go:/olym/"
+    planes:
+      - gh
+      - ha
+      - ho
+    resolution_order:
+      - ha
+      - ho
+      - gh
+    deterministic: true
+
+  branches:
+    - c
+    - g
+    - s
+    - k
+    - x
+    - release
+    - meta
+
+  execution_allowed: false
+  immutable_after_tag: true
+```
+
+---
+
+## Kết quả
+
+Charter v2.0:
+
+* Plane-native
+* Merge-native
+* Deterministic-first
+* Không phụ thuộc GitHub
+* Phù hợp hoàn toàn với OLYM Structure Rule v1.1
+

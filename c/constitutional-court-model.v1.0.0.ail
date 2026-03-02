@@ -1,0 +1,255 @@
+```yaml
+# HEADER (100% EN)
+header:
+  id: OLYM://constitutional.court.model.v1.0.0
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+  version: 1.0.0
+  alignment:
+    - OLYM://charter.v2.0.0
+    - OLYM://structure.rule.v1.1.0
+  ratification: PENDING_COUNCIL_SEAL
+
+metadata:
+  doctrine: "constitutional_review_plane_native"
+  jurisdiction: "go:/olym/*"
+  authority_level: "constitutional"
+  hash_anchor: "{{to_be_sealed}}"
+```
+
+---
+
+# OLYM Constitutional Court Model v1.0
+
+**Plane-Native Constitutional Adjudication Framework**
+
+---
+
+# I. PURPOSE & JURISDICTION
+
+### Article 1 — Establishment
+
+Tòa Hiến pháp Olym (OCC) là cơ chế phán quyết tối cao về tính hợp hiến trong toàn bộ namespace `go:/olym/*`.
+
+### Article 2 — Jurisdiction Scope
+
+OCC có thẩm quyền đối với:
+
+* Charter
+* Structure Rule
+* Merge Model
+* Plane override disputes
+* Authority conflicts giữa các branch (c/g/s/k/x/meta)
+
+### Article 3 — Logical Supremacy
+
+Phán quyết của OCC có hiệu lực trên logical namespace, không can thiệp trực tiếp vào physical plane.
+
+---
+
+# II. COURT STRUCTURE
+
+```yaml
+court_structure:
+  chamber:
+    name: "Constitutional Chamber"
+    judges: 5
+    quorum: 3
+    decision_rule: "majority"
+
+  roles:
+    chief_judge:
+      selection: "council_designation"
+    associate_judge:
+      selection: "multi_role_nomination"
+```
+
+### Article 4 — Composition
+
+Tòa gồm 5 thẩm phán; tối thiểu 3 người để hợp lệ.
+
+### Article 5 — Independence
+
+Không thẩm phán nào được xét xử vụ việc do chính mình khởi tạo.
+
+### Article 6 — Conflict Disclosure
+
+Bắt buộc công khai xung đột lợi ích.
+
+---
+
+# III. CASE TYPES
+
+```yaml
+case_types:
+  - constitutional_conflict
+  - merge_resolution_dispute
+  - branch_authority_violation
+  - improper_override
+  - procedural_amendment_violation
+```
+
+### Article 7 — Constitutional Conflict
+
+Khi hai artifact mâu thuẫn với Charter hoặc Structure Rule.
+
+### Article 8 — Merge Dispute
+
+Khi plane override gây ambiguity hoặc phá vỡ determinism.
+
+### Article 9 — Authority Violation
+
+Khi nhánh `g/` hoặc `s/` vượt thẩm quyền.
+
+### Article 10 — Procedural Violation
+
+Khi amendment không tuân thủ quy trình.
+
+---
+
+# IV. ADJUDICATION PROCESS
+
+### Article 11 — Petition
+
+Bất kỳ vai trò governance nào có thể nộp kiến nghị.
+
+### Article 12 — Preliminary Review
+
+Chief Judge quyết định thụ lý.
+
+### Article 13 — Evidence Scope
+
+Chỉ sử dụng artifact trong `go:/olym/*`.
+
+### Article 14 — Deterministic Analysis
+
+Mọi phán quyết phải dựa trên merge order hiến định.
+
+### Article 15 — Majority Decision
+
+Quyết định theo đa số; ghi rõ dissent nếu có.
+
+---
+
+# V. REMEDIES
+
+```yaml
+remedies:
+  - invalidate_artifact
+  - suspend_override
+  - require_amendment
+  - interpretative_guideline
+```
+
+### Article 16 — Invalidation
+
+Artifact vi hiến có thể bị tuyên vô hiệu.
+
+### Article 17 — Override Suspension
+
+Override plane có thể bị đình chỉ.
+
+### Article 18 — Amendment Requirement
+
+Yêu cầu sửa đổi theo đúng quy trình.
+
+### Article 19 — Interpretative Guidance
+
+Ban hành hướng dẫn giải thích hiến pháp.
+
+---
+
+# VI. PRECEDENT SYSTEM
+
+### Article 20 — Binding Precedent
+
+Phán quyết trước có giá trị ràng buộc nếu cùng loại vụ việc.
+
+### Article 21 — Overruling
+
+Chỉ được đảo precedent bằng quyết định 4/5.
+
+### Article 22 — Publication
+
+Mọi phán quyết phải lưu tại:
+
+```text
+go:/olym/c/court/decisions/<case-id>.ail
+```
+
+---
+
+# VII. PLANE-NATIVE PRINCIPLES
+
+### Article 23 — Plane Neutrality
+
+Tòa không ưu tiên plane gh/ha/ho.
+
+### Article 24 — Logical Consistency
+
+Phán quyết không được phá vỡ determinism.
+
+### Article 25 — No Cross-Plane Mutation
+
+Tòa không sửa trực tiếp nội dung physical plane.
+
+### Article 26 — Merge Order Protection
+
+Resolution order là hiến định.
+
+---
+
+# VIII. EMERGENCY REVIEW
+
+### Article 27 — Fast Track
+
+Trong trường hợp phá vỡ determinism nghiêm trọng, có thể xét xử khẩn cấp.
+
+### Article 28 — Temporary Suspension
+
+Có thể tạm đình chỉ override trong khi xét xử.
+
+---
+
+# IX. AMENDMENT OF COURT MODEL
+
+### Article 29 — Constitutional Level
+
+Court Model thuộc nhánh `c/`.
+
+### Article 30 — Amendment Rule
+
+Sửa đổi yêu cầu Major version và Council Seal.
+
+---
+
+# X. TECHNICAL MODEL
+
+```yaml
+adjudication_model:
+  jurisdiction_root: "go:/olym/"
+  authority_source: "OLYM://charter.v2.0.0"
+  resolution_reference: "OLYM://structure.rule.v1.1.0"
+
+  decision:
+    quorum: 3
+    majority_required: true
+    supermajority_for_overrule: 4
+
+  enforcement:
+    logical_effect_only: true
+    physical_mutation: false
+```
+
+---
+
+# XI. EFFECT
+
+Mô hình này thiết lập:
+
+* Tòa Hiến pháp plane-native
+* Cơ chế xử lý tranh chấp override
+* Bảo vệ determinism của merge model
+* Tách biệt hoàn toàn giữa adjudication và runtime
+
