@@ -1,0 +1,160 @@
+---
+header:
+  id: GO://olym.k.cogninfer.strategies.caw-crystallize.v1
+  intent: DECLARE_STRATEGY
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.strategy.caw_crystallize"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    CAW Crystallize Strategy — chiến lược cho Cogninfer Actors tại caw:/
+    layer. Assemble → Test → Crystallize. Tuân thủ minispace canon.
+---
+
+# 🎯 STRATEGY — CAW Crystallize
+
+> **Authority**: caw:/minispace/.know/canon/LIFECYCLE.ail + PRINCIPLES.ail
+> **Branch**: `go:/olym/k/cogninfer/strategies/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/strategies/caw-crystallize.ail`
+
+---
+
+## S-CC-1 — Lifecycle 7 bước
+
+```text
+artifact
+   ↓
+1. IMPORT          (read-only source từ ha:/engine/, gh:cosda-dev, crates.io)
+   ↓
+2. ASSEMBLE        (path-deps trong ws-*/Cargo.toml)
+   ↓
+3. RESOLVE DEPS    (cargo metadata + cargo update)
+   ↓
+4. CARGO CHECK     (cargo check --release)
+   ↓
+5. CARGO TEST      (cargo test --release — smoke only)
+   ↓
+6. CRYSTALLIZE     (cargo build --release → strip → sign → pack)
+   ↓
+7. OUTPUTS         (.wasm .dll .so .a .cap .amo .ae .exe .rco .aso)
+```
+
+## S-CC-2 — Per-workspace Structure
+
+```text
+ws-<name>/
+├── Cargo.toml                 # path-deps only — NO src/, NO crates/
+├── manifest.ail               # workspace manifest
+├── scripts/
+│   ├── cargo-check.ps1
+│   ├── cargo-test.ps1
+│   ├── cargo-build.ps1
+│   ├── cargo-crystallize.ps1
+│   └── cargo-release.ps1
+├── tests/                     # integration smoke tests
+├── release/                   # crystallized outputs (generated)
+└── README.md
+```
+
+## S-CC-3 — Cargo.toml canonical
+
+```toml
+# ws-<name>/Cargo.toml
+[package]
+name = "<workspace>"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Path-deps ONLY — read-only source từ Forge Layer
+hace-actor-text = { path = "ha:/engine/hace/actor/text-ractor" }
+hace-io-rac     = { path = "ha:/engine/hace/io/rac" }
+serde = "1"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = "symbols"
+```
+
+## S-CC-4 — Scripts chuẩn
+
+```powershell
+# scripts/cargo-check.ps1
+Set-Location $PSScriptRoot/..
+cargo check --release --target-dir caw:/minispace/.shared-target
+
+# scripts/cargo-test.ps1
+Set-Location $PSScriptRoot/..
+cargo test --release --target-dir caw:/minispace/.shared-target
+
+# scripts/cargo-crystallize.ps1
+Set-Location $PSScriptRoot/..
+cargo build --release --target-dir caw:/minispace/.shared-target
+# → strip → sign (RNA Ed25519) → pack
+
+# scripts/cargo-release.ps1
+Set-Location $PSScriptRoot/..
+# copy từ .shared-target/release/ sang ws-<name>/release/
+Copy-Item caw:/minispace/.shared-target/release/<name>.<ext> release/
+```
+
+## S-CC-5 — Crystallize Output
+
+```yaml
+output_artifacts:
+  location: "caw:/minispace/ws-<name>/release/"
+  files:
+    - "<name>.wasm"
+    - "<name>.dll" | "<name>.so" | "<name>.dylib"
+    - "<name>.cap"
+    - "<name>.amo"
+    - "<name>.ae"
+    - "<name>.exe"  # optional
+    - "<name>.rco"
+    - "<name>.aso"
+  signing:
+    algorithm: "Ed25519"
+    keypair: "t:/keys/<key_id>"
+    manifest: "release/<name>.manifest.json"
+```
+
+## S-CC-6 — Fail handling
+
+Nếu `cargo check` hoặc `cargo test` fail:
+
+```text
+caw FAIL
+   ↓
+DIAGNOSE (Fixer tại caw:/minispace/ws-<name>/)
+   ↓
+REPORT (Fixer ghi report)
+   ↓
+HANDOFF (Fixer chuyển về ha:/engine/<dom>/<mod>/)
+   ↓
+FORGE PATCH (Producer/Fixer tại ha:/)
+   ↓
+VALIDATE (Tester)
+   ↓
+PUSH (Publisher → gh:cosda-dev/*)
+   ↓
+RE-RUN caw:/minispace/ws-<name>/
+```
+
+## Liên kết
+
+- [caw:/minispace/.know/canon/LIFECYCLE.ail](file:///T:/caw/minispace/.know/canon/LIFECYCLE.ail)
+- [caw:/minispace/.know/canon/PRINCIPLES.ail](file:///T:/caw/minispace/.know/canon/PRINCIPLES.ail)
+- [caw:/minispace/.know/canon/LAYOUT.ail](file:///T:/caw/minispace/.know/canon/LAYOUT.ail)
+- [go:/olym/k/cogninfer/strategies/forge-first.ail](file:///T:/gopia/olym/k/cogninfer/strategies/forge-first.ail)
+
+---
+
+*Strategy: S-CC | Authority: caw canon | Branch: k/cogninfer/strategies*
+*Last canonical update: 2026-07-30*

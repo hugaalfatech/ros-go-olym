@@ -1,0 +1,166 @@
+---
+header:
+  id: GO://olym.k.cogninfer.rules.fap-rrp-mapping.v1
+  intent: DECLARE_RULE
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.rule.fap_rrp_mapping"
+  source_of_truth: "ha:/ha/rules/fap-rrp-mapping.ail"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Mirror ha:/ha/rules/fap-rrp-mapping.ail trong Olym knowledge canon.
+    Bắt buộc dùng FAP khi publish knowledge/documents; resolve sang RRP
+    tại runtime qua bảng ánh xạ này.
+---
+
+# 📜 RULE — FAP → RRP Mapping (Olym Mirror)
+
+> **Authority**: GOPIA://olym.constitution.v1 + ha:/ha/rules/fap-rrp-mapping.ail
+> **Branch**: `go:/olym/k/cogninfer/rules/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/rules/fap-rrp-mapping.ail`
+
+---
+
+## R-FAP-1 — BẮT BUỘC dùng FAP trong publish
+
+Khi viết tài liệu knowledge, AIL document, hoặc message giữa Cogninfer Actors,
+PHẢI dùng **FAP (Feature Artifact Path)** — đường dẫn ngữ nghĩa, con người đọc được.
+
+Khi thực thi file I/O, PHẢI resolve FAP → RRP (Reality Resource Path) —
+đường dẫn vật lý, máy đọc được — tương ứng với platform hiện tại.
+
+## R-FAP-2 — Bảng ánh xạ chuẩn
+
+### Root Namespaces
+
+| FAP | RRP (Windows) | RRP (Linux/WSL) | Vai trò |
+|---|---|---|---|
+| `ha:/` | `T:/hace/` | `/mnt/t/hace/` | Forge root |
+| `ha:/ha` | `T:/hace/.hace/` | `/mnt/t/hace/.hace/` | Alliance Cogen hub |
+| `ha:/ha/rules` | `T:/hace/.hace/rules/` | `/mnt/t/hace/.hace/rules/` | Luật hiến định |
+| `ha:/ha/skills` | `T:/hace/.hace/skills/` | `/mnt/t/hace/.hace/skills/` | Kỹ năng tác chiến |
+| `ha:/ha/roles` | `T:/hace/.hace/roles/` | `/mnt/t/hace/.hace/roles/` | Vai trò |
+| `ha:/k` | `T:/hace/.know/` | `/mnt/t/hace/.know/` | Knowledge base |
+| `ha:/e/<dom>` | `T:/hace/engine/<dom>/` | `/mnt/t/hace/engine/<dom>/` | Engine source |
+| `ha:/e/<partner>` | `T:/hace/partners/<partner>/` | `/mnt/t/hace/partners/<partner>/` | Partner engines |
+
+### CAW Namespaces
+
+| FAP | RRP (Windows) | RRP (Linux/WSL) | Vai trò |
+|---|---|---|---|
+| `caw:/` | `T:/caw/` | `/mnt/t/caw/` | CAW root |
+| `caw:/minispace/` | `T:/caw/minispace/` | `/mnt/t/caw/minispace/` | Virtual workspaces |
+| `caw:/minispace/.cargo` | `T:/caw/minispace/.cargo/` | `/mnt/t/caw/minispace/.cargo/` | global cargo config |
+| `caw:/minispace/.shared-target` | `T:/caw/minispace/.shared-target/` | `/mnt/t/caw/minispace/.shared-target/` | shared target |
+| `caw:/minispace/.shared-vendor` | `T:/caw/minispace/.shared-vendor/` | `/mnt/t/caw/minispace/.shared-vendor/` | shared vendor |
+| `caw:/minispace/.shared-registry` | `T:/caw/minispace/.shared-registry/` | `/mnt/t/caw/minispace/.shared-registry/` | shared registry |
+
+### Workspace Namespaces
+
+| FAP | RRP (Windows) | RRP (Linux/WSL) | Vai trò |
+|---|---|---|---|
+| `ws:/` | `T:/workspaces/` | `/mnt/t/workspaces/` | Workspaces root |
+| `ws://hacex-studio` | `T:/workspaces/hacex-studio/` | `/mnt/t/workspaces/hacex-studio/` | AI Studio |
+| `ws://hace-rosa` | `T:/workspaces/hace-rosa/` | `/mnt/t/workspaces/hace-rosa/` | Rosa workspace |
+| `ws://hacex-zeus` | `T:/workspaces/hacex-zeus/` | `/mnt/t/workspaces/hacex-zeus/` | Zeus ext |
+| `ws://zeus-cloud` | `T:/workspaces/zeus-cloud/` | `/mnt/t/workspaces/zeus-cloud/` | Cloud apps |
+| `ws://zeus-code` | `T:/workspaces/zeus-code/` | `/mnt/t/workspaces/zeus-code/` | CLI fork |
+| `ws://zeus-market` | `T:/workspaces/zeus-market/` | `/mnt/t/workspaces/zeus-market/` | MCP marketplace |
+| `ws://macro-engine` | `T:/workspaces/macro-engine/` | `/mnt/t/workspaces/macro-engine/` | ME coord |
+
+### Olym Namespaces
+
+| FAP | RRP (Windows) | RRP (Linux/WSL) | Vai trò |
+|---|---|---|---|
+| `go:/` | `T:/gopia/olym/` | `/mnt/t/gopia/olym/` | Olym root |
+| `go:/c/` | `T:/gopia/olym/c/` | `/mnt/t/gopia/olym/c/` | Constitutional canon |
+| `go:/g/` | `T:/gopia/olym/g/` | `/mnt/t/gopia/olym/g/` | Governance |
+| `go:/s/` | `T:/gopia/olym/s/` | `/mnt/t/gopia/olym/s/` | Standards |
+| `go:/k/` | `T:/gopia/olym/k/` | `/mnt/t/gopia/olym/k/` | Knowledge canon |
+| `go:/k/cogninfer/` | `T:/gopia/olym/k/cogninfer/` | `/mnt/t/gopia/olym/k/cogninfer/` | Shared knowledge |
+| `go:/x/` | `T:/gopia/olym/x/` | `/mnt/t/gopia/olym/x/` | Extensions |
+| `go:/release/` | `T:/gopia/olym/release/` | `/mnt/t/gopia/olym/release/` | Sealed bundles |
+| `go:/meta/` | `T:/gopia/olym/meta/` | `/mnt/t/gopia/olym/meta/` | Meta-governance |
+
+### Other Spaces
+
+| FAP | RRP (Windows) | RRP (Linux/WSL) | Vai trò |
+|---|---|---|---|
+| `ho:/` | `T:/helio/` | `/mnt/t/helio/` | Helio Cloud |
+| `co:/` | `T:/comet/` | `/mnt/t/comet/` | Comet Network |
+
+### Cloud Distribution (no local RRP)
+
+| FAP | URL | Vai trò |
+|---|---|---|
+| `gh:cosda-dev/*` | `https://github.com/cosda-dev/<repo>` | Cosda distribution |
+| `gh:hugaalfatech/ros-go-olym` | `https://github.com/hugaalfatech/ros-go-olym` | Olym canonical mirror |
+| `gh:cosda-dev/hace-*` | `https://github.com/cosda-dev/hace-<repo>` | HACE repos (CONA family) |
+| `gh:cosda-dev/rr-*` | `https://github.com/cosda-dev/rr-<repo>` | RR infra repos |
+| `crates:<crate>` | `https://crates.io/crates/<crate>` | crates.io upstream |
+
+## R-FAP-3 — Compact Namespaces
+
+```yaml
+compact_namespaces:
+  gov_c: "//gov/c/*"    → "go:/olym/c/*"
+  gov_g: "//gov/g/*"    → "go:/olym/g/*"
+  gov_s: "//gov/s/*"    → "go:/olym/s/*"
+  gov_k: "//gov/k/*"    → "go:/olym/k/*"
+  gov_x: "//gov/x/*"    → "go:/olym/x/*"
+```
+
+## R-FAP-4 — Resolution Algorithm
+
+```yaml
+resolution_algorithm:
+  steps:
+    - 1: "Nhận FAP (vd: ha:/e/rr/actor/text-ractor)"
+    - 2: "Xác định namespace root (ha:/, caw:/, ws:/, go:/, gh:, crates:)"
+    - 3: "Tra bảng ánh xạ → RRP (vd: T:/hace/engine/rr/actor/text-ractor)"
+    - 4: "Nếu platform = Linux/WSL → convert T:/ → /mnt/t/"
+    - 5: "Verify RRP exists trước khi I/O"
+  errors:
+    fap_not_mapped: "R-FAP-5 VIOLATION"
+    rrp_not_exist: "R-FAP-6 VIOLATION"
+    cross_plane_skip: "R-FAP-7 VIOLATION"
+```
+
+## R-FAP-5 — Banned Patterns
+
+| Pattern | Why |
+|---|---|
+| Hardcode `/mnt/t/...` trên Windows | Phải dùng FAP + resolve |
+| Hardcode `T:/...` trên Linux | Phải dùng FAP + resolve |
+| Mixed FAP + RRP trong cùng doc | Inconsistent — chọn 1 |
+| Skip namespace prefix | Bắt buộc `ha:/`, `caw:/`, `ws:/`, `go:/`, `gh:` |
+
+## R-FAP-6 — Plane-Awareness (Olym Specific)
+
+Per `olym-structure-rule.ail v1.1`, Olym có 3 plane + 1 logical:
+
+```yaml
+planes:
+  gh: "Public canonical cloud (GitHub baseline)"
+  ha: "Local RRP override (Hace device)"
+  ho: "Cloud mirror / distributed host"
+  go: "Logical merged namespace"
+```
+
+Resolution order: **ha → ho → gh → first_match_wins**
+
+## Liên kết
+
+- [go:/olym/olym-structure-rule.ail](file:///T:/gopia/olym/olym-structure-rule.ail)
+- [ha:/ha/rules/fap-rrp-mapping.ail](file:///T:/hace/.hace/rules/fap-rrp-mapping.ail) (canonical SoT)
+- [go:/olym/k/cogninfer/INDEX.ail](file:///T:/gopia/olym/k/cogninfer/INDEX.ail)
+
+---
+
+*Rule: R-FAP | Authority: GOPIA://olym.constitution.v1 | Branch: k/cogninfer/rules*
+*Last canonical update: 2026-07-30*

@@ -1,0 +1,227 @@
+---
+header:
+  id: GO://olym.k.cogninfer.skills.audit-invariants.v1
+  intent: DECLARE_SKILL
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.skill.audit_invariants"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Audit Invariants Skill — recipe cho Cogninfer Auditor khi verify MAY/MAY-NOT
+    compliance cho engine parts (ha:/), minispaces (caw:/), final products (ws:/).
+---
+
+# 🛠 SKILL — Audit Invariants
+
+> **Authority**: caw:/minispace/.know/canon/CONTRACT.ail + ws:/AGENTS.md
+> **Branch**: `go:/olym/k/cogninfer/skills/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/skills/audit-invariants.ail`
+
+---
+
+## SK-AI-1 — Principle
+
+> **Auditor không tạo source. Auditor chỉ verify compliance.**
+
+Mỗi Cogninfer Actor (đặc biệt Auditor) PHẢI kiểm tra MAY/MAY-NOT matrix
+trước khi approve seal + push lên Distribution.
+
+## SK-AI-2 — Per-layer Invariants
+
+### Engine Parts (ha:/)
+
+```yaml
+engine_invariants:
+  must_have:
+    - "manifest.ail"
+    - "fan-table.ail"
+    - "Cargo.toml"
+    - "src/lib.rs"
+    - "src/amo.rs hoặc src/nep.rs"
+    - "tests/"
+    - "C-X-R zones (x/, r/, c/)"
+  must_not_have:
+    - "src/ bị override bởi workspace"
+    - "Hardcoded credentials"
+    - "Cargo.toml không có [package] metadata"
+```
+
+### Minispaces (caw:/)
+
+```yaml
+minispace_invariants:
+  must_have:
+    - "Cargo.toml với path-deps only"
+    - "scripts/ orchestration"
+    - "tests/ smoke integration"
+    - "manifest.ail"
+    - "README.md"
+  must_not_have:
+    - "src/ trong ws-*"
+    - "crates/ trong ws-*"
+    - "engine/ trong ws-*"
+    - "vendor/ trong ws-*"
+    - "[workspace] section trong ws-*/Cargo.toml"
+    - "Modify ha:/engine/* từ caw context"
+```
+
+### Final Products (ws:/)
+
+```yaml
+workspace_invariants:
+  must_have:
+    - "AGENTS.md (workspace-specific)"
+    - "README.md"
+    - ".know/overview.ail"
+    - "Integration tests PASS"
+    - "Sign + verify artifact"
+  must_not_have:
+    - "Patch ha:/engine/* từ ws context"
+    - "Patch caw:/ từ ws context"
+    - "Skip integration test"
+    - "Push unsealed artifact"
+```
+
+## SK-AI-3 — Recipe (PowerShell)
+
+```powershell
+# Audit script
+function Invoke-Audit {
+    param(
+        [string]$Target,    # ha: | caw: | ws:
+        [string]$Path       # local path
+    )
+
+    $results = @()
+    switch ($Target) {
+        "caw" {
+            # Check no src/ in ws-*
+            $srcDirs = Get-ChildItem -Path "$Path/ws-*" -Directory `
+                -ErrorAction SilentlyContinue | Where-Object {
+                Test-Path "$_/src"
+            }
+            if ($srcDirs.Count -gt 0) {
+                $results += "VIOLATION: src/ in $($srcDirs.Name)"
+            }
+
+            # Check no crates/ in ws-*
+            $cratesDirs = Get-ChildItem -Path "$Path/ws-*" -Directory `
+                -ErrorAction SilentlyContinue | Where-Object {
+                Test-Path "$_/crates"
+            }
+            if ($cratesDirs.Count -gt 0) {
+                $results += "VIOLATION: crates/ in $($cratesDirs.Name)"
+            }
+
+            # Check no vendor/ in ws-*
+            $vendorDirs = Get-ChildItem -Path "$Path/ws-*" -Directory `
+                -ErrorAction SilentlyContinue | Where-Object {
+                Test-Object "$_/vendor"
+            }
+            if ($vendorDirs.Count -gt 0) {
+                $results += "VIOLATION: vendor/ in $($vendorDirs.Name)"
+            }
+        }
+        "ha" {
+            # Check Cargo.toml exists
+            if (-not (Test-Path "$Path/Cargo.toml")) {
+                $results += "VIOLATION: missing Cargo.toml"
+            }
+            # Check manifest.ail
+            if (-not (Test-Path "$Path/manifest.ail")) {
+                $results += "VIOLATION: missing manifest.ail"
+            }
+        }
+        "ws" {
+            # Check AGENTS.md
+            if (-not (Test-Path "$Path/AGENTS.md")) {
+                $results += "VIOLATION: missing AGENTS.md"
+            }
+            # Check README.md
+            if (-not (Test-Path "$Path/README.md")) {
+                $results += "VIOLATION: missing README.md"
+            }
+        }
+    }
+
+    return $results
+}
+```
+
+## SK-AI-4 — Audit Report
+
+```yaml
+audit_report_format:
+  audit_id: "<uuid>"
+  target: "<ha | caw | ws>"
+  target_path: "<fap path>"
+  auditor_id: "<actor id>"
+  timestamp: "<iso8601>"
+  invariants_checked: <int>
+  violations_found: <int>
+  violations:
+    - rule_id: "<R-CPF-N | R-AAM-N | R-SI-N>"
+      severity: "<P0 | P1 | P2>"
+      description: "<text>"
+      fix_action: "<handoff target>"
+  verdict: "<PASS | FAIL | CONDITIONAL>"
+  next_action: "<approve_seal | block_release | require_fix>"
+```
+
+## SK-AI-5 — Verdict Logic
+
+```yaml
+verdict:
+  PASS:
+    condition: "0 violations"
+    action: "approve_seal"
+  CONDITIONAL:
+    condition: "1+ P2 violations, 0 P0/P1"
+    action: "require_fix (P2 không block release)"
+  FAIL:
+    condition: "1+ P0 hoặc P1 violations"
+    action: "block_release + require_fix + handoff"
+```
+
+## SK-AI-6 — Severity Levels
+
+```yaml
+severity:
+  P0:
+    description: "Constitutional violation — block release"
+    examples:
+      - "Modify ha:/engine/* từ caw: hoặc ws: context"
+      - "Push unsealed artifact"
+      - "Skip integration test"
+      - "Violate c/ constitution"
+  P1:
+    description: "Hard rule violation — block release"
+    examples:
+      - "src/ trong ws-*"
+      - "vendor/ duplicate per-workspace"
+      - "Cargo.toml thiếu [package]"
+      - "AGENTS.md missing"
+  P2:
+    description: "Convention violation — require_fix"
+    examples:
+      - "README.md thiếu example"
+      - "scripts/ thiếu một script"
+      - "Commit message không đúng format"
+```
+
+## Liên kết
+
+- [caw:/minispace/.know/canon/CONTRACT.ail](file:///T:/caw/minispace/.know/canon/CONTRACT.ail)
+- [ws:/AGENTS.md](file:///T:/workspaces/AGENTS.md)
+- [ha:/AGENTS.md](file:///T:/hace/AGENTS.md)
+- [go:/olym/k/cogninfer/rules/actor-authority-matrix.ail](file:///T:/gopia/olym/k/cogninfer/rules/actor-authority-matrix.ail)
+
+---
+
+*Skill: SK-AI | Authority: Audit canon | Branch: k/cogninfer/skills*
+*Last canonical update: 2026-07-30*

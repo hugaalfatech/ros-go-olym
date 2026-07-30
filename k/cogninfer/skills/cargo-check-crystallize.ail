@@ -1,0 +1,149 @@
+---
+header:
+  id: GO://olym.k.cogninfer.skills.cargo-check-crystallize.v1
+  intent: DECLARE_SKILL
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.skill.cargo_check_crystallize"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Cargo Check & Crystallize Skill — recipe thực thi cargo check / test /
+    build / crystallize tại caw:/minispace/{ws-*}/. Dùng chung shared infra.
+---
+
+# 🛠 SKILL — Cargo Check & Crystallize
+
+> **Authority**: caw:/minispace/.know/canon/LIFECYCLE.ail
+> **Branch**: `go:/olym/k/cogninfer/skills/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/skills/cargo-check-crystallize.ail`
+
+---
+
+## SK-CCC-1 — Setup (một lần)
+
+```powershell
+# Verify shared infra exists
+Test-Path caw:/minispace/.cargo/config.toml
+Test-Path caw:/minispace/.shared-target
+Test-Path caw:/minispace/.shared-vendor
+Test-Path caw:/minispace/.shared-registry
+
+# Nếu chưa có, init:
+New-Item -ItemType Directory -Path caw:/minispace/.shared-target
+New-Item -ItemType Directory -Path caw:/minispace/.shared-vendor
+New-Item -ItemType Directory -Path caw:/minispace/.shared-registry/{github,crates-io,local,company}
+
+# Populate vendor từ crates.io
+cargo vendor caw:/minispace/.shared-vendor
+```
+
+## SK-CCC-2 — Check (verify assembly)
+
+```powershell
+# Trong caw:/minispace/{ws-*}/
+Set-Location caw:/minispace/ws-<name>
+
+# Cargo check
+cargo check --release `
+  --target-dir caw:/minispace/.shared-target
+
+# Verify no error
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "cargo check FAILED — handoff to ha:/engine/"
+}
+```
+
+## SK-CCC-3 — Test (smoke integration)
+
+```powershell
+Set-Location caw:/minispace/ws-<name>
+
+# Cargo test (smoke only tại CAW layer)
+cargo test --release `
+  --target-dir caw:/minispace/.shared-target
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "cargo test FAILED — diagnose + handoff"
+}
+```
+
+## SK-CCC-4 — Crystallize (build → strip → sign → pack)
+
+```powershell
+Set-Location caw:/minispace/ws-<name>
+
+# Build release
+cargo build --release `
+  --target-dir caw:/minispace/.shared-target
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "cargo build FAILED — diagnose"
+}
+
+# Strip symbols (giảm size)
+strip caw:/minispace/.shared-target/release/<name>.exe `
+      --strip-unneeded
+
+# Sign (RNA Ed25519)
+& t:/tools/sign/rna-sign.ps1 `
+    -Input caw:/minispace/.shared-target/release/<name>.<ext> `
+    -Key t:/keys/<key_id>.key `
+    -Output caw:/minispace/ws-<name>/release/<name>.<ext>
+
+# Pack manifest
+@{
+    name = "<name>"
+    version = "0.1.0"
+    hash = (Get-FileHash caw:/minispace/ws-<name>/release/<name>.<ext>).Hash
+    signed_by = "<key_id>"
+    timestamp = (Get-Date -Format "o")
+} | ConvertTo-Json | Out-File caw:/minispace/ws-<name>/release/<name>.manifest.json
+```
+
+## SK-CCC-5 — Release (publish to workspace + GitHub)
+
+```powershell
+# Copy artifact to ws-* release/
+Copy-Item caw:/minispace/.shared-target/release/<name>.<ext> `
+          caw:/minispace/ws-<name>/release/
+
+# Publisher push to gh:cosda-dev/<workspace>-release
+git push origin main
+# → trigger CI: sign + tag + publish
+```
+
+## SK-CCC-6 — Error Matrix
+
+| Error | Diagnose | Handoff |
+|---|---|---|
+| `cargo check` fail | run `cargo check --message-format=json` | ha:/engine/ |
+| `cargo test` fail | check stderr excerpt | ha:/engine/<mod>/r/ |
+| `cargo build` fail | check link error | ha:/engine/<mod>/ |
+| `strip` fail | artifact type mismatch | Builder retry |
+| `sign` fail | key not found | check t:/keys/ |
+| `pack` fail | manifest invalid | Producer fix |
+
+## SK-CCC-7 — Best Practices
+
+1. **Luôn dùng `--release`** tại CAW layer.
+2. **Luôn trỏ `--target-dir`** về `.shared-target/`.
+3. **Không duplicate** vendor/target per workspace.
+4. **Smoke test only** tại CAW — full test tại Forge.
+5. **Sign trước khi release** — unsealed artifact = VIOLATION.
+6. **Manifest bắt buộc** cho mỗi artifact.
+
+## Liên kết
+
+- [caw:/minispace/.know/canon/LIFECYCLE.ail](file:///T:/caw/minispace/.know/canon/LIFECYCLE.ail)
+- [caw:/minispace/.know/canon/REGISTRY.ail](file:///T:/caw/minispace/.know/canon/REGISTRY.ail)
+- [go:/olym/k/cogninfer/skills/audit-invariants.ail](file:///T:/gopia/olym/k/cogninfer/skills/audit-invariants.ail)
+
+---
+
+*Skill: SK-CCC | Authority: caw canon | Branch: k/cogninfer/skills*
+*Last canonical update: 2026-07-30*

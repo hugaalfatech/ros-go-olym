@@ -1,0 +1,148 @@
+---
+header:
+  id: GO://olym.k.cogninfer.skills.c-x-r-promotion.v1
+  intent: DECLARE_SKILL
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.skill.cxr_promotion"
+  source_of_truth: "ha:/ha/skills/cxr/cxr-model.ail"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    C-X-R Promotion Skill — recipe thực thi cho Cogninfer Actors khi promote
+    một artifact qua các zone draft → runtime → canon. Mirror ha:/ha/skills/cxr/.
+---
+
+# 🛠 SKILL — C-X-R Promotion
+
+> **Authority**: ha:/ha/skills/cxr/cxr-model.ail (canonical SoT)
+> **Branch**: `go:/olym/k/cogninfer/skills/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/skills/c-x-r-promotion.ail`
+
+---
+
+## SK-CXR-1 — Nguyên lý
+
+> **draft-first, test-always, canon-once**
+
+```yaml
+zones:
+  x_draft:
+    path: "ha:/engine/<dom>/<mod>/x/"
+    role: "Vùng nháp — T3C/AIA Coden, NAP commit daily, MUTABLE"
+  r_runtime:
+    path: "ha:/engine/<dom>/<mod>/r/"
+    role: "Vùng kiểm thử — CTO/CSA, weekly, assembly + test"
+  c_canon:
+    path: "ha:/engine/<dom>/<mod>/c/"
+    role: "Vùng bất biến — CSA/CEO, monthly seal, FAH vào Poly Ledger"
+```
+
+## SK-CXR-2 — Promotion Rules
+
+```yaml
+x_to_r:
+  trigger: "NAP đủ điều kiện"
+  requirements:
+    - "NAP ≤ 120 LOC"
+    - "single intent"
+    - "atomic"
+    - "stateless"
+    - "deterministic"
+  actor: "T3C-PRODUCER + CTO review"
+
+r_to_c:
+  trigger: "CAP đã stable"
+  requirements:
+    - "All invariant tests pass"
+    - "CAP ≤ 1000 LOC"
+    - "CSA approve"
+    - "CEO seal"
+  actor: "CSA + CEO"
+
+rejection:
+  trigger: "Same NAP fail 3+ lần"
+  action: "CSA re-define spec"
+  principle: "Không có 'đập đi xây lại' — chỉ re-cast NAP fail"
+```
+
+## SK-CXR-3 — Recipe
+
+```powershell
+# Bước 1: Tạo NAP trong x/
+New-Item -ItemType Directory -Path ha:/engine/<dom>/<mod>/x/<nap-name>
+# author src/<nap>.rs theo nano-scalization (≤120 LOC)
+
+# Bước 2: Test trong x/ (smoke test)
+cd ha:/engine/<dom>/<mod>/x/<nap-name>
+cargo test
+
+# Bước 3: Promote x/ → r/ (sau khi pass smoke)
+Copy-Item -Recurse ha:/engine/<dom>/<mod>/x/<nap-name> ha:/engine/<dom>/<mod>/r/
+cd ha:/engine/<dom>/<mod>/r/<nap-name>
+cargo test --release
+
+# Bước 4: Promote r/ → c/ (sau khi pass + CSA approve)
+Copy-Item -Recurse ha:/engine/<dom>/<mod>/r/<nap-name> ha:/engine/<dom>/<mod>/c/
+# CSA seal → Poly Ledger
+```
+
+## SK-CXR-4 — Sealed Artifact (CAP)
+
+```yaml
+cap_output:
+  path: "ha:/engine/<dom>/<mod>/c/<nap-name>.cap"
+  extensions: [".wasm", ".so", ".dll", ".ae", ".amo"]
+  signed_by: "CSA / CEO"
+  hash: "<blake3>"
+  published_to: ["gh:cosda-dev/*", "gh:hugaalfatech/ros-go-olym"]
+```
+
+## SK-CXR-5 — Nano CASL Ladder
+
+```yaml
+casl_ladder:
+  MIC:
+    loc: "5-20 LOC, 1 function"
+    actor: "T3C"
+  NAP:
+    loc: "30-120 LOC, ≤5 functions, ≤3 deps"
+    actor: "T3C"
+    afc: "EE.CC.RR.FF.nXX"
+  CAP:
+    loc: "150-1000 LOC, 3-12 NAP"
+    actor: "CTO"
+    afc: "EE.CC.RR.FF"
+  NEP:
+    loc: "1000-5000 LOC, 3-15 CAP"
+    actor: "CSA"
+  ME:
+    loc: "5-20 NEP"
+    actor: "CSA / Royal"
+  SPACE:
+    loc: "GitHub org / Cosda space"
+```
+
+## SK-CXR-6 — Hard Rules
+
+| Rule | Code |
+|---|---|
+| CAP > 1000 LOC → REJECT | R001 |
+| NAP must be atomic, stateless, deterministic | R002 |
+| Only stable CAP/NEP may enter /c | R003 |
+| nano-first, never top-down monolith | R004 |
+
+## Liên kết
+
+- [ha:/ha/skills/cxr/cxr-model.ail](file:///T:/hace/.hace/skills/cxr/cxr-model.ail) (SoT)
+- [ha:/ha/skills/nano/stg-nano-scalization.ail](file:///T:/hace/.hace/skills/nano/stg-nano-scalization.ail)
+- [go:/olym/k/cogninfer/INDEX.ail](file:///T:/gopia/olym/k/cogninfer/INDEX.ail)
+
+---
+
+*Skill: SK-CXR | Authority: ha canon | Branch: k/cogninfer/skills*
+*Last canonical update: 2026-07-30*

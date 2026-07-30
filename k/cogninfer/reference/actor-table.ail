@@ -1,0 +1,90 @@
+---
+header:
+  id: GO://olym.k.cogninfer.reference.actor-table.v1
+  intent: DECLARE_REFERENCE
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.reference.actor_table"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Bảng tra cứu nhanh 12 Cogninfer Actors — role, layer, primary action.
+---
+
+# 📖 REFERENCE — Actor Table (12 Actors)
+
+> **Branch**: `go:/olym/k/cogninfer/reference/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/reference/actor-table.ail`
+
+---
+
+## Officer Layer (Strategic — 7 actors)
+
+| ID | Role | Layer focus | Primary action |
+|---|---|---|---|
+| CSA | Chief System Architect | All layers | Seal canon, approve blueprint |
+| CRD | Chief Research & Development | ha:/ha/, go:/olym/ | Biên soạn Canon & Glossary |
+| CTO | Chief Technology Officer | ha:/ha/specs/, ws:/ | Approve SPEC.ail |
+| CVA | Chief Visual Architect | ha:/ha/avs/, ws://hacex-studio | Surface design |
+| CGE | Orchestrate & Dispatch | All layers | Dispatch SIO_task |
+| Refactor | Code Refactoring & Cleanup | ha:/engine/ | Refactor internal code |
+| Reporter | Documentation & Report | All layers | Generate report |
+
+## Worker Layer (Operational — 5 actors)
+
+| ID | Role | Layer focus | Primary action |
+|---|---|---|---|
+| Producer | Artifact Executor | ha:/engine/, caw:/minispace/ws-*/ | Author code + Cargo.toml |
+| Builder | Build & Crystallization | ha:/engine/, caw:/minispace/ws-*/ | cargo build + strip + sign |
+| Fixer | Bug Fix & Patch Engineer | ha:/engine/ | Patch + re-validate |
+| Auditor | Quality Verification | All layers | Verify MAY/MAY-NOT |
+| Tester | Test & Validate | All layers | cargo test + integration test |
+| Publisher | Release & Distribution | gh:/ | Push + tag |
+
+> Note: Tổng 13 actors (7 officer + 5 worker + Reporter như một actor). Per `.trae/agents/`:
+> auditor, builder, cva, crd, csa, cto, cge, fixer, producer = 9 active files.
+
+## Layer Assignment
+
+```yaml
+actor_layer_focus:
+  CSA: ["ha:/ha/", "go:/olym/"]
+  CRD: ["ha:/ha/", "caw:/.know/"]
+  CTO: ["ha:/ha/specs/", "ws:/"]
+  CVA: ["ha:/ha/avs/", "ws://hacex-studio"]
+  CGE: ["caw:/minispace/", "ws:/"]
+  Producer: ["ha:/engine/", "caw:/minispace/ws-*/"]
+  Builder: ["ha:/engine/", "caw:/minispace/ws-*/"]
+  Fixer: ["ha:/engine/"]
+  Auditor: ["all"]
+  Tester: ["all"]
+  Publisher: ["gh:/"]
+```
+
+## Agent JSON Files (`.trae/agents/`)
+
+| File | Identifier | Layer |
+|---|---|---|
+| `auditor.json` | auditor | Worker |
+| `builder.json` | builder | Worker |
+| `cva.json` | cva | Officer |
+| `crd.json` | crd | Officer |
+| `csa.json` | csa | Officer |
+| `cto.json` | cto | Officer |
+| `cge.json` | cge | Worker |
+| `fixer.json` | fixer | Worker |
+| `producer.json` | producer | Worker |
+
+## Liên kết
+
+- [go:/olym/k/cogninfer/rules/actor-authority-matrix.ail](file:///T:/gopia/olym/k/cogninfer/rules/actor-authority-matrix.ail)
+- [ha:/ha/roles/](file:///T:/hace/.hace/roles/)
+
+---
+
+*Reference: REF-ACTORS | Authority: CSA | Branch: k/cogninfer/reference*
+*Last canonical update: 2026-07-30*

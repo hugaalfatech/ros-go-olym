@@ -1,0 +1,132 @@
+---
+header:
+  id: GO://olym.k.cogninfer.index.v1
+  intent: DECLARE_SCHEMA
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  fractal_name: "olym.cogninfer.knowledge"
+  branch: "k"
+  parent_canon: "olym-structure-rule.ail v1.1"
+  supersedes: []
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Olym Knowledge Canon — Shared Rules / Skills / Strategies for Cosda
+    Runinfers / Cogninfers / Hactors. Mục tiêu: rulization (luật hoá) toàn bộ
+    các actor khi impl/execute/audit trong local production flow
+    (Forge → CAW → Workspace → Distribution).
+  scope:
+    - "ha:/hace/*        — Forge Layer (engine parts, FEM, NEP, NAP, raw)"
+    - "caw:/caw/*         — Crystallize Assemble Warehouse (semi-engine)"
+    - "ws:/workspaces/*   — Final Product Assembly (apps)"
+    - "gh:cosda-dev/*     — Cloud Distribution (GitHub)"
+    - "gh:hugaalfatech/ros-go-olym — Olym canonical mirror"
+  audience:
+    - "Cogninfer Actors (CSA / CRD / CTO / CVA / CGE / Producer / Builder / Fixer / Auditor / Tester / Publisher)"
+    - "Runinfers (HA-side execution layer)"
+    - "Hactors (Hybrid Actor — cross-layer)"
+    - "Human engineers onboard Cosda / HACE / Gopia"
+  read_order: "constitution → rules → strategies → skills → reference"
+---
+
+# Olym Knowledge Canon — `k/cogninfer/`
+
+> Logical FAP: `go:/olym/k/cogninfer/`
+> RRP (Windows): `t:/gopia/olym/k/cogninfer/`
+> Plane model: `gh` baseline + `ha` local override + `ho` cloud overlay (per `olym-structure-rule.ail`).
+
+## Mệnh đề canon
+
+> **Olym luật hoá. Forge rèn. CAW kết tinh. Workspace đóng gói.**
+
+Đây là **tầng Normative** của Government Olympia (GO), cung cấp rules/skills/strategies **bắt buộc** cho mọi Cogninfer Actor khi impl/execute/audit `cogen / forge / assemble / crystallize / seal / push` trong pipeline:
+
+```text
+T:/hace/                  T:/caw/                  T:/workspaces/        GitHub
+ha:/ Forge Layer    →     caw:/ CAW Layer    →     ws:/ Workspace    →    gh:/
+(engine parts,            (semi-engine,            (final app,           (cosda-dev,
+ FEM, NEP, NAP,            secondary product,       program,               hugaalfatech/
+ raw material,             provider/partner/        service)               ros-go-olym)
+ reference impl)           developer artifact)
+       ▲                          ▲                       ▲
+       │                          │                       │
+       └──────── GO normative canon governs ALL ──────────┘
+                       go:/olym/k/cogninfer/*
+```
+
+## Branch Map (theo Olym Structure Rule v1.1)
+
+| Olym Branch | Authority | Vai trò | Trong cogninfer |
+|---|---|---|---|
+| `c/` | constitutional | Luật tối cao | KHÔNG thuộc — đã có ở `c/ros/*` |
+| `g/` | governance | Charter, rule, policy | Tham chiếu `g/charter/olym-charter-v2.0.0.ail` |
+| `s/` | technical contract | Standards & specs | Tham chiếu `s/protocol/*` |
+| **`k/`** | **knowledge** | **Blueprint & domain knowledge** | **← ĐÂY** |
+| `x/` | experimental | Extensions | KHÔNG thuộc scope này |
+| `release/` | sealed | Snapshot versioned | Sau khi seal, copy vào đây |
+| `meta/` | self-governance | Amendment, compatibility | Versioning & compatibility |
+
+## `k/cogninfer/` Tree
+
+```text
+k/cogninfer/
+├── INDEX.ail                      ← (file này) — bắt đầu tại đây
+│
+├── rules/                         ← BẮT BUỘC tuân thủ
+│   ├── canon-production-flow.ail  ← 4-layer production canon
+│   ├── actor-authority-matrix.ail ← MAY/MAY-NOT cho 12 actors
+│   ├── fap-rrp-mapping.ail        ← FAP→RRP resolution (mirror ha:/ha/rules)
+│   └── shared-infra-contract.ail  ← Shared vendor/target/registry rule
+│
+├── strategies/                    ← CHIẾN LƯỢC thực thi
+│   ├── forge-first.ail            ← Forge → Patch → Push (CRD canon)
+│   ├── caw-crystallize.ail        ← Assemble → Test → Crystallize
+│   ├── workspace-productize.ail   ← Customize → Package → Release
+│   └── diagnosis-handoff.ail      ← Fail → Diagnose → Handoff Forge
+│
+├── skills/                        ← KỸ NĂNG tác chiến (recipes)
+│   ├── c-x-r-promotion.ail        ← x/ → r/ → c/ lifecycle
+│   ├── nano-decomposition.ail     ← MIC → NAP → CAP → NEP → ME
+│   ├── cargo-check-crystallize.ail← CAW build recipe
+│   ├── git-push-cosda.ail         ← Push to cosda-dev / hugaalfatech
+│   ├── 429-resilience.ail         ← Triple-layer backoff
+│   └── audit-invariants.ail       ← Auditor skill — verify MAY/MAY-NOT
+│
+└── reference/                     ← Tra cứu nhanh
+    ├── actor-table.ail            ← 12 actors + role
+    ├── fap-rap-id.ail             ← FAP namespace IDs
+    ├── artifact-types.ail         ← NAP / CAP / DAP / MAP / NEP / ME
+    └── output-extensions.ail      ← .wasm / .so / .dll / .cap / .amo / .ae
+```
+
+## Authority & Amendment
+
+- **Authority**: kế thừa từ `canon/constitution.ail` (Article I-VI, SEALED).
+- **Amendment**: chỉ qua `g/charter/olym-charter-v2.0.0.ail` + ACM consensus.
+- **Override**: KHÔNG layer nào override được — k/ là knowledge, không override được c/g/s.
+- **Plane merge**: `ha` override `ho` override `gh` (first_match_wins per `olym-structure-rule.ail`).
+
+## Cách sử dụng
+
+1. **Mọi Cogninfer Actor** (CSA/CRD/CTO/CVA/CGE/Producer/Builder/Fixer/Auditor/Tester/Publisher) khi vào bất kỳ layer nào của pipeline PHẢI load `k/cogninfer/INDEX.ail` này.
+2. **Đọc tuần tự**: `rules/` (luật) → `strategies/` (cách làm) → `skills/` (recipes) → `reference/` (tra cứu).
+3. **Reference paths trong mỗi file đều dùng FAP** (`ha:/`, `caw:/`, `ws:/`, `go:/`, `gh:/`) — resolve tại runtime qua `fap-rrp-mapping.ail`.
+
+## Liên kết ngược (cross-layer)
+
+| Layer | AGENTS / README tương ứng | Vai trò |
+|---|---|---|
+| Forge | [ha:/AGENTS.md](file:///T:/hace/AGENTS.md) | Source of Truth |
+| CAW | [caw:/AGENTS.md](file:///T:/caw/AGENTS.md) | Assemble / Crystallize |
+| Minispace | [caw:/minispace/AGENTS.md](file:///T:/caw/minispace/AGENTS.md) | Virtual workspace |
+| Workspace | [ws:/AGENTS.md](file:///T:/workspaces/AGENTS.md) | Final product |
+| Olym | [go:/olym/k/cogninfer/INDEX.ail](file:///T:/gopia/olym/k/cogninfer/INDEX.ail) | ← BẠN ĐANG Ở ĐÂY |
+| HACE Hub | [ha:/ha/README.md](file:///T:/hace/.hace/README.md) | Alliance Cogen hub |
+
+---
+
+*Authority: GOPIA://olym.constitution.v1 | Branch: k/cogninfer | Plane: gh+ha+ho*
+*Last canonical update: 2026-07-30*

@@ -1,0 +1,151 @@
+---
+header:
+  id: GO://olym.k.cogninfer.skills.nano-decomposition.v1
+  intent: DECLARE_SKILL
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.skill.nano_decomposition"
+  source_of_truth: "ha:/ha/skills/nano/stg-nano-scalization.ail"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Nano Decomposition Skill — recipe phân rã mọi artifact cấp Mega/Macro
+    thành NAP theo nano-first principle. Mirror ha:/ha/skills/nano/.
+---
+
+# 🛠 SKILL — Nano Decomposition
+
+> **Authority**: ha:/ha/skills/nano/stg-nano-scalization.ail (canonical SoT)
+> **Branch**: `go:/olym/k/cogninfer/skills/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/skills/nano-decomposition.ail`
+
+---
+
+## SK-ND-1 — Principle
+
+> **nano-first, reality-always**
+
+Mọi artifact cấp ME/Macro PHẢI được phân rã thành NAP trước khi forge.
+
+## SK-ND-2 — CASL Ladder
+
+```yaml
+ladder:
+  - level: MIC
+    loc: "5-20"
+    fns: 1
+    deps: 0
+    actor: "T3C"
+    description: "Smallest functional unit"
+  - level: NAP
+    loc: "30-120"
+    fns: "≤5"
+    deps: "≤3"
+    actor: "T3C"
+    afc: "EE.CC.RR.FF.nXX"
+    description: "Nano Artifact Particle — atomic, stateless, deterministic, composable"
+  - level: CAP
+    loc: "150-1000"
+    fns: "3-12 NAP"
+    deps: "<NAP>"
+    actor: "CTO"
+    afc: "EE.CC.RR.FF"
+    description: "Crystallized Artifact Particle — sealed bundle"
+  - level: NEP
+    loc: "1000-5000"
+    fns: "3-15 CAP"
+    deps: "<CAP>"
+    actor: "CSA"
+    description: "Nano Engine Part"
+  - level: ME
+    loc: "5-20 NEP"
+    deps: "<NEP>"
+    actor: "CSA / Royal"
+    description: "Macro Engine"
+  - level: SPACE
+    loc: "GitHub org / Cosda space"
+    deps: "<ME>"
+    actor: "CSO"
+    description: "Distribution space"
+```
+
+## SK-ND-3 — Decomposition Recipe
+
+```text
+INPUT: mega-artifact (≥ 5000 LOC)
+   ↓
+Step 1: Identify functional boundaries
+   ↓
+Step 2: Split into NEPs (1000-5000 LOC each)
+   ↓
+Step 3: Each NEP → split into CAPs (150-1000 LOC)
+   ↓
+Step 4: Each CAP → split into NAPs (30-120 LOC)
+   ↓
+Step 5: Each NAP → split into MICs (5-20 LOC)
+   ↓
+OUTPUT: composition tree NAP → CAP → NEP → ME
+```
+
+## SK-ND-4 — NAP Properties
+
+```yaml
+nap_properties:
+  atomic: true            # 1 intent duy nhất
+  stateless: true         # Không có internal state
+  deterministic: true     # Cùng input → cùng output
+  composable: true        # Kết hợp được với NAP khác
+  testable: true          # Có thể test độc lập
+  sealed: false           # Chưa qua CSA seal (đang ở /x)
+```
+
+## SK-ND-5 — Hard Rules
+
+| Code | Rule |
+|---|---|
+| R001 | CAP > 1000 LOC → REJECT, decompose to NAP |
+| R002 | NAP must be atomic, stateless, deterministic |
+| R003 | Only stable CAP/NEP may enter /c |
+| R004 | nano-first, never top-down monolith |
+| R005 | MIC không có external dependency |
+| R006 | NAP không quá 3 deps |
+| R007 | CAP phải có ≥ 3 NAP |
+
+## SK-ND-6 — Example
+
+```yaml
+mega_engine: "hace-me-rcme"
+decomposition:
+  - nep: "rcme.orch"
+    caps:
+      - cap: "rcme.orch.boot"
+        naps:
+          - nap: "rcme.boot.energy"
+          - nap: "rcme.boot.dag"
+          - nap: "rcme.boot.allocate"
+      - cap: "rcme.orch.schedule"
+      - cap: "rcme.orch.dispatch"
+  - nep: "rcme.l1"
+    caps:
+      - cap: "rcme.l1.constitution"
+      - cap: "rcme.l1.verify"
+  - nep: "rcme.sdm"
+    caps:
+      - cap: "rcme.sdm.hot_cache"
+      - cap: "rcme.sdm.snapshot"
+```
+
+## Liên kết
+
+- [ha:/ha/skills/nano/stg-nano-scalization.ail](file:///T:/hace/.hace/skills/nano/stg-nano-scalization.ail) (SoT)
+- [ha:/ha/skills/cxr/cxr-model.ail](file:///T:/hace/.hace/skills/cxr/cxr-model.ail)
+- [go:/olym/k/cogninfer/skills/c-x-r-promotion.ail](file:///T:/gopia/olym/k/cogninfer/skills/c-x-r-promotion.ail)
+
+---
+
+*Skill: SK-ND | Authority: ha canon | Branch: k/cogninfer/skills*
+*Last canonical update: 2026-07-30*

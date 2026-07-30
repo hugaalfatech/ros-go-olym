@@ -1,0 +1,155 @@
+---
+header:
+  id: GO://olym.k.cogninfer.reference.fap-rap-id.v1
+  intent: DECLARE_REFERENCE
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.reference.fap_rap_id"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    FAP namespace IDs — bảng tra cứu nhanh Feature Artifact Path. Bắt buộc
+    dùng FAP khi publish knowledge/documents.
+---
+
+# 📖 REFERENCE — FAP Namespace IDs
+
+> **Branch**: `go:/olym/k/cogninfer/reference/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/reference/fap-rap-id.ail`
+
+---
+
+## Root Namespaces
+
+| FAP | Vai trò |
+|---|---|
+| `ha:/` | HACE Forge Layer |
+| `caw:/` | Crystallize Assemble Warehouse |
+| `ws:/` | Workspace Layer |
+| `go:/` | Olym Government |
+| `gh:` | GitHub (cosda-dev, hugaalfatech) |
+| `crates:` | crates.io |
+| `ho:/` | Helio Cloud |
+| `co:/` | Comet Network |
+
+## HACE Subspaces
+
+| FAP | Vai trò |
+|---|---|
+| `ha:/ha` | Allia Cogen Hub |
+| `ha:/ha/rules` | Luật hiến định |
+| `ha:/ha/skills` | Kỹ năng tác chiến |
+| `ha:/ha/roles` | Vai trò |
+| `ha:/ha/caem` | CAEM map |
+| `ha:/ha/engine` | Engine specs |
+| `ha:/ha/allia` | Allia IO Bridge |
+| `ha:/ha/rc` | RC Framework |
+| `ha:/k` | Knowledge base |
+| `ha:/e/<dom>` | Engine domain source |
+| `ha:/e/<partner>` | Partner engines |
+| `ha:/caw` | Sealed artifacts |
+
+## CAW Subspaces
+
+| FAP | Vai trò |
+|---|---|
+| `caw:/` | CAW root |
+| `caw:/minispace` | Virtual assemble workspaces |
+| `caw:/minispace/.cargo` | global cargo config |
+| `caw:/minispace/.shared-target` | shared target |
+| `caw:/minispace/.shared-vendor` | shared vendor |
+| `caw:/minispace/.shared-registry` | shared registry |
+| `caw:/minispace/.know` | canon + docs |
+| `caw:/minispace/ws-*` | individual workspace |
+
+## Workspace Subspaces
+
+| FAP | Workspace |
+|---|---|
+| `ws://hacex-studio` | AI Studio |
+| `ws://hace-rosa` | Assembly workspace |
+| `ws://hacex-zeus` | Zeus VS Code extension |
+| `ws://zeus-cloud` | Cloud apps |
+| `ws://zeus-code` | CLI fork |
+| `ws://zeus-market` | MCP marketplace |
+| `ws://macro-engine` | ME coordination |
+| `ws://<provider-a>` | Provider workspace |
+| `ws://<partner-b>` | Partner workspace |
+| `ws://<developer-c>` | Developer workspace |
+
+## Olym Subspaces (Go Normative)
+
+| FAP | Vai trò |
+|---|---|
+| `go:/olym/` | Olym root |
+| `go:/olym/c/` | Constitutional canon |
+| `go:/olym/g/` | Governance instruments |
+| `go:/olym/s/` | Standards & specs |
+| `go:/olym/k/` | Knowledge canon |
+| `go:/olym/k/cogninfer/` | Shared cogninfer knowledge |
+| `go:/olym/k/cogninfer/rules/` | Rules |
+| `go:/olym/k/cogninfer/strategies/` | Strategies |
+| `go:/olym/k/cogninfer/skills/` | Skills |
+| `go:/olym/k/cogninfer/reference/` | References |
+| `go:/olym/x/` | Extensions |
+| `go:/olym/release/` | Sealed bundles |
+| `go:/olym/meta/` | Meta-governance |
+
+## Compact Namespaces
+
+```yaml
+compact:
+  gov_c: "//gov/c/*"     → "go:/olym/c/*"
+  gov_g: "//gov/g/*"     → "go:/olym/g/*"
+  gov_s: "//gov/s/*"     → "go:/olym/s/*"
+  gov_k: "//gov/k/*"     → "go:/olym/k/*"
+  gov_x: "//gov/x/*"     → "go:/olym/x/*"
+```
+
+## Hok Namespace (Hookpoint Registry)
+
+```yaml
+hok_namespace:
+  prefix: "hok://"
+  examples:
+    - "hok://actor/text-ractor/port"
+    - "hok://io/rac/path_filter"
+    - "hok://fem/cap/authority_gate"
+```
+
+## Identity & Authority IDs
+
+```yaml
+identifiers:
+  HI: "HI://Sodino"              # Sovereign identity
+  ARA: "ARA-64"                   # 64-bit bitmask authority
+  ACM: "ACM://<domain>"           # Actor machine
+  ARO: "ARO://<rel>"              # Relationship graph
+  ATO: "ATO://<token>"            # Authority token
+  ATK: "ATK://<key>"              # Authority key
+  ALR: "ALR://<ledger>"           # Authority ledger
+  ZES: "ZES://<seal>"             # Seal
+  RC: "RC://<rule-contract>"      # Rule contract
+  AFN: "AFN://<artifact>"         # Artifact functional node
+  CAP: "CAP://<name>"             # Crystallized artifact particle
+  NAP: "NAP://<name>"             # Nano artifact particle
+  NEP: "NEP://<name>"             # Nano engine part
+  AEP: "AEP://<epoch>"            # Authority epoch
+  RFN: "RFN://<function>"         # Reified function node
+  TEE: "TEE://<env>"              # Trusted execution env
+```
+
+## Liên kết
+
+- [go:/olym/k/cogninfer/rules/fap-rrp-mapping.ail](file:///T:/gopia/olym/k/cogninfer/rules/fap-rrp-mapping.ail)
+- [ha:/ha/rules/fap-rrp-mapping.ail](file:///T:/hace/.hace/rules/fap-rrp-mapping.ail)
+- [go:/olym/olym-structure-rule.ail](file:///T:/gopia/olym/olym-structure-rule.ail)
+
+---
+
+*Reference: REF-FAP | Authority: GOPIA://olym.constitution.v1 | Branch: k/cogninfer/reference*
+*Last canonical update: 2026-07-30*

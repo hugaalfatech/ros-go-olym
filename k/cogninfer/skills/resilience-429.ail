@@ -1,0 +1,155 @@
+---
+header:
+  id: GO://olym.k.cogninfer.skills.resilience-429.v1
+  intent: DECLARE_SKILL
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.skill.resilience_429"
+  source_of_truth: "ha:/ha/skills/resilience_429.ail"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    429 Resilience Skill — recipe Triple-Layer Backoff cho Cogninfer Actors
+    khi gặp 429 Too Many Requests từ Cloud vendor. Mirror ha:/ha/skills/.
+---
+
+# 🛠 SKILL — Resilience 429
+
+> **Authority**: ha:/ha/skills/resilience_429.ail (canonical SoT)
+> **Branch**: `go:/olym/k/cogninfer/skills/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/skills/resilience-429.ail`
+
+---
+
+## SK-429-1 — Principle
+
+> **allow_passive_death: false**
+> Tuyệt đối KHÔNG chết khi đang execute. PHẢI retry + fallback.
+
+## SK-429-2 — Triple-Layer Architecture
+
+```yaml
+layers:
+  layer_1_gateway:
+    name: "Gateway Resilience"
+    retries: 5
+    backoff: "exponential"
+    base_delay: "5s"
+    cap_delay: "30s"
+    extra: "key_rotation"
+    actor: "Gateway service"
+  layer_2_cognactor:
+    name: "Cognactor Resilience"
+    backoff: "cognitive"
+    extra:
+      - "state_freeze"
+      - "emit COMMAND_ROTATE_AXIS"
+    actor: "Cogninfer Actor (CSA/CRD/CTO/...)"
+  layer_3_plugin:
+    name: "Plugin Resilience"
+    retries: 3
+    fallback: "local_feh"
+    graceful_degradation: true
+    actor: "Plugin layer"
+```
+
+## SK-429-3 — Recipe
+
+```powershell
+# Layer 1: Gateway retry với exponential backoff
+function Invoke-GatewayRetry {
+    param(
+        [scriptblock]$Action,
+        [int]$MaxRetries = 5,
+        [int]$BaseDelay = 5,
+        [int]$CapDelay = 30
+    )
+    $attempt = 0
+    while ($attempt -lt $MaxRetries) {
+        try {
+            return & $Action
+        }
+        catch [System.Net.WebException] {
+            $statusCode = $_.Exception.Response.StatusCode
+            if ($statusCode -eq 429) {
+                $attempt++
+                $delay = [Math]::Min(
+                    [int]([Math]::Pow(2, $attempt) * $BaseDelay),
+                    $CapDelay
+                )
+                # Add jitter
+                $jitter = Get-Random -Minimum 0 -Maximum 1000
+                Start-Sleep -Seconds $delay -Milliseconds $jitter
+                Write-Warning "429 — retry $attempt/$MaxRetries after ${delay}s"
+            }
+            else {
+                throw
+            }
+        }
+    }
+    throw "Gateway retries exhausted"
+}
+```
+
+## SK-429-4 — Layer 2 (Cognactor)
+
+```yaml
+cognactor_steps:
+  - 1: "Detect 429"
+  - 2: "Cognitive backoff (perceive → analyze → backoff)"
+  - 3: "State freeze (preserve current cognition state)"
+  - 4: "Emit COMMAND_ROTATE_AXIS"
+  - 5: "Switch to alternative axis (vd: git thay vì crates.io)"
+  - 6: "Resume sau backoff window"
+```
+
+## SK-429-5 — Layer 3 (Plugin fallback)
+
+```yaml
+plugin_fallback_chain:
+  primary: "Cloud vendor API"
+  secondary: "Local FEH (Forensic Event Horizon)"
+  tertiary: "Cached result (if available)"
+  quaternary: "Graceful degradation (return partial)"
+```
+
+## SK-429-6 — Anti-pattern
+
+| Pattern | Why |
+|---|---|
+| Die on first 429 | Violates `allow_passive_death: false` |
+| Infinite retry without cap | Resource exhaustion |
+| No jitter | Thundering herd |
+| Skip layer 2 (cognitor) | Lose cognition continuity |
+| Skip layer 3 (FEH) | No graceful degradation |
+| Log PAT/secret in error msg | Security leak |
+
+## SK-429-7 — Audit
+
+Mỗi 429 event PHẢI được log:
+
+```yaml
+log_format:
+  layer: "<layer_1 | layer_2 | layer_3>"
+  attempt: <int>
+  backoff_delay: "<seconds>"
+  axis_rotated: "<from → to>"
+  outcome: "<retry_success | fallback_success | exhausted>"
+  timestamp: "<iso8601>"
+  actor_id: "<cogninfer agent>"
+```
+
+## Liên kết
+
+- [ha:/ha/skills/resilience_429.ail](file:///T:/hace/.hace/skills/resilience_429.ail) (SoT)
+- [ha:/ha/skills/alliance-cogen-workflow.ail](file:///T:/hace/.hace/skills/alliance-cogen-workflow.ail)
+- [go:/olym/k/cogninfer/INDEX.ail](file:///T:/gopia/olym/k/cogninfer/INDEX.ail)
+
+---
+
+*Skill: SK-429 | Authority: ha canon | Branch: k/cogninfer/skills*
+*Last canonical update: 2026-07-30*

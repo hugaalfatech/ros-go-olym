@@ -1,0 +1,136 @@
+---
+header:
+  id: GO://olym.k.cogninfer.strategies.workspace-productize.v1
+  intent: DECLARE_STRATEGY
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.strategy.workspace_productize"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Workspace Productize Strategy — chiến lược cho Cogninfer Actors tại
+    ws:/ layer. Customize → Package → Release. Provider/Partner/Developer
+    workflow.
+---
+
+# 🎯 STRATEGY — Workspace Productize
+
+> **Authority**: ws:/AGENTS.md + workspace-specific AGENTS.md
+> **Branch**: `go:/olym/k/cogninfer/strategies/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/strategies/workspace-productize.ail`
+
+---
+
+## S-WP-1 — Vai trò Workspace
+
+> **Workspace assembles the products.**
+
+Workspace Layer (`ws:/`) là nơi Provider/Partner/Developer lấy các
+semi-engine / secondary product / provider-partner-developer artifact
+từ CAW để assemble, customize, configure, integrate, package thành
+final product hoàn chỉnh.
+
+## S-WP-2 — Workflow 6 bước
+
+```text
+caw:/minispace/{ws-*}/release/<artifact>
+   ↓
+1. IMPORT          (cargo dep / npm install / pip install)
+   ↓
+2. ASSEMBLE        (wire các artifact + business logic)
+   ↓
+3. CUSTOMIZE       (UI / branding / config)
+   ↓
+4. INTEGRATE       (cross-engine integration test)
+   ↓
+5. PACKAGE         (VSIX / MSI / AppImage / dmg / exe / helm chart)
+   ↓
+6. RELEASE         (gh:cosda-dev/<workspace>-release)
+```
+
+## S-WP-3 — Workspace Layout
+
+```text
+ws/<workspace>/
+├── .know/                     # knowledge
+├── .trae/                     # cognition
+├── forge/                     # prototype (FAM.yaml, manifest.ail)
+├── build/                     # production space (assemble/integrate/wire)
+│   └── <module>/
+│       ├── src/
+│       ├── Cargo.toml
+│       ├── BUILD.ail
+│       └── build.rs
+├── caw/                       # local CAW staging (read-only)
+├── tests/                     # integration tests
+├── scripts/                   # orchestration
+├── vendor/                    # vendor deps
+├── config/                    # routes, indexes
+├── AGENTS.md                  # workspace-specific
+├── README.md
+└── package.json / Cargo.toml
+```
+
+## S-WP-4 — Customize Allowed
+
+| Action | Authority |
+|---|---|
+| UI customization | CVA + Producer |
+| Branding / theming | CVA |
+| Config / env | Producer |
+| Business logic | Producer (own code) |
+| Engine source patch | ❌ FORBIDDEN (return to Forge) |
+| CAW source patch | ❌ FORBIDDEN (return to CAW) |
+
+## S-WP-5 — Package Formats
+
+| Workspace | Package format | Command |
+|---|---|---|
+| `ws://hacex-studio` | VSIX | `bun run package` |
+| `ws://hace-rosa` | wheel / exe | `pip wheel` / `cargo build` |
+| `ws://hacex-zeus` | VSIX | `bun run package` |
+| `ws://zeus-cloud` | helm chart | `helm package` |
+| `ws://zeus-code` | exe / dmg / AppImage | `bun run package` |
+
+## S-WP-6 — Distribution Channel
+
+```text
+ws:/<workspace>/
+   ↓
+package + sign + verify
+   ↓
+gh:cosda-dev/<workspace>-release (canonical)
+   ↓
+crates.io (nếu là Rust crate)
+   ↓
+Milky / Helio Cloud (nếu là runtime service)
+   ↓
+End User / Customer
+```
+
+## S-WP-7 — Quality Gate (BẮT BUỘC trước Release)
+
+| Gate | Owner | Required |
+|---|---|---|
+| Unit test PASS | Tester | ✅ |
+| Integration test PASS | Tester | ✅ |
+| E2E smoke test PASS | Tester | ✅ |
+| Security audit | Auditor | ✅ |
+| Workspace-specific AGENTS.md compliance | Auditor | ✅ |
+| Sign + verify artifact | Builder + Auditor | ✅ |
+| CSA seal (nếu làm việc với engine parts) | CSA | ✅ |
+
+## Liên kết
+
+- [ws:/AGENTS.md](file:///T:/workspaces/AGENTS.md)
+- [ws:/README.md](file:///T:/workspaces/README.md)
+- [go:/olym/k/cogninfer/strategies/caw-crystallize.ail](file:///T:/gopia/olym/k/cogninfer/strategies/caw-crystallize.ail)
+
+---
+
+*Strategy: S-WP | Authority: ws canon | Branch: k/cogninfer/strategies*
+*Last canonical update: 2026-07-30*

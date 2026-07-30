@@ -1,0 +1,176 @@
+---
+header:
+  id: GO://olym.k.cogninfer.reference.output-extensions.v1
+  intent: DECLARE_REFERENCE
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.reference.output_extensions"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Output Extensions reference — bảng tra cứu nhanh các extension output
+    của crystallize step, kèm signing + distribution guidance.
+---
+
+# 📖 REFERENCE — Output Extensions
+
+> **Branch**: `go:/olym/k/cogninfer/reference/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/reference/output-extensions.ail`
+
+---
+
+## Crystallized Outputs (CAW layer)
+
+```yaml
+caw_outputs:
+  - ext: ".wasm"
+    name: "WebAssembly"
+    target: "wasm32-unknown-unknown"
+    signing: "Ed25519 (RNA)"
+    distribution: ["gh:cosda-dev/*", "gh:hugaalfatech/ros-go-olym"]
+  - ext: ".so"
+    name: "Shared Object (Linux)"
+    target: "x86_64-unknown-linux-gnu"
+    signing: "Ed25519 (RNA)"
+    distribution: ["gh:cosda-dev/*"]
+  - ext: ".dll"
+    name: "Dynamic Link Library (Windows)"
+    target: "x86_64-pc-windows-msvc"
+    signing: "Ed25519 (RNA)"
+    distribution: ["gh:cosda-dev/*"]
+  - ext: ".dylib"
+    name: "Dynamic Library (macOS)"
+    target: "x86_64-apple-darwin"
+    signing: "Ed25519 (RNA)"
+    distribution: ["gh:cosda-dev/*"]
+  - ext: ".ae"
+    name: "Artifact Executable"
+    target: "Cosda runtime"
+    signing: "ZES seal"
+    distribution: ["gh:cosda-dev/*"]
+  - ext: ".amo"
+    name: "Actor Module Object"
+    target: "HA actor runtime"
+    signing: "ZES seal + RNA"
+    distribution: ["gh:cosda-dev/*"]
+  - ext: ".cap"
+    name: "Crystallized Artifact Particle"
+    target: "CAW output"
+    signing: "CSA seal"
+    distribution: ["gh:cosda-dev/*", "caw:/minispace/ws-*/release/"]
+  - ext: ".rco"
+    name: "Runtime Callable Object"
+    target: "RCO runtime"
+    signing: "Ed25519 (RNA)"
+    distribution: ["gh:cosda-dev/*"]
+  - ext: ".aso"
+    name: "Authority Surface Object"
+    target: "AVS surface"
+    signing: "Authority + ZES"
+    distribution: ["gh:cosda-dev/*"]
+  - ext: ".sio"
+    name: "Stream IO Object"
+    target: "Comet/HO network"
+    signing: "Ed25519 (RNA)"
+    distribution: ["gh:cosda-dev/*"]
+  - ext: ".ase"
+    name: "Authority Sealed Executable"
+    target: "Sealed bundle"
+    signing: "CSA + Authority seal"
+    distribution: ["gh:cosda-dev/*", "gh:hugaalfatech/ros-go-olym"]
+```
+
+## Workspace Final Products
+
+```yaml
+workspace_outputs:
+  - ext: ".vsix"
+    name: "VS Code Extension"
+    target: "VS Code marketplace"
+    distribution: ["gh:cosda-dev/<workspace>-release", "marketplace.visualstudio.com"]
+  - ext: ".msi"
+    name: "Windows Installer"
+    target: "Windows"
+    distribution: ["gh:cosda-dev/<workspace>-release"]
+  - ext: ".exe"
+    name: "Windows Executable"
+    target: "Windows native"
+    distribution: ["gh:cosda-dev/<workspace>-release"]
+  - ext: ".dmg"
+    name: "macOS Disk Image"
+    target: "macOS"
+    distribution: ["gh:cosda-dev/<workspace>-release"]
+  - ext: ".AppImage"
+    name: "Linux AppImage"
+    target: "Linux portable"
+    distribution: ["gh:cosda-dev/<workspace>-release"]
+  - ext: ".deb"
+    name: "Debian Package"
+    target: "Debian/Ubuntu"
+    distribution: ["gh:cosda-dev/<workspace>-release"]
+  - ext: ".rpm"
+    name: "Red Hat Package"
+    target: "Fedora/RHEL"
+    distribution: ["gh:cosda-dev/<workspace>-release"]
+  - ext: ".whl"
+    name: "Python Wheel"
+    target: "PyPI"
+    distribution: ["PyPI", "gh:cosda-dev/<workspace>-release"]
+  - ext: ".tgz"
+    name: "Helm Chart"
+    target: "Kubernetes"
+    distribution: ["gh:cosda-dev/<workspace>-release", "Helm registry"]
+  - ext: ".tar.gz"
+    name: "Generic Archive"
+    target: "Universal"
+    distribution: ["gh:cosda-dev/<workspace>-release"]
+```
+
+## Manifest Format (per artifact)
+
+```yaml
+manifest_template:
+  name: "<artifact-name>"
+  version: "<semver>"
+  extension: "<.wasm | .so | ...>"
+  hash:
+    algorithm: "blake3"
+    value: "<hash>"
+  signed_by:
+    key_id: "<key_id>"
+    algorithm: "Ed25519"
+    signature: "<signature>"
+  sealed_by: "CSA / CEO"
+  timestamp: "<iso8601>"
+  source_layer: "<ha:/engine/<dom>/<mod>/c/>"
+  distributed_to:
+    - "gh:cosda-dev/<repo>"
+    - "gh:hugaalfatech/ros-go-olym"
+  dependencies: ["<dep1>", "<dep2>"]
+  capabilities: ["<cap1>", "<cap2>"]
+```
+
+## Signing Command (RNA Ed25519)
+
+```powershell
+& t:/tools/sign/rna-sign.ps1 `
+    -Input <artifact>.<ext> `
+    -Key t:/keys/<key_id>.key `
+    -Output <artifact>.<ext>.signed `
+    -Manifest <artifact>.manifest.json
+```
+
+## Liên kết
+
+- [caw:/minispace/.know/canon/LIFECYCLE.ail](file:///T:/caw/minispace/.know/canon/LIFECYCLE.ail)
+- [go:/olym/k/cogninfer/skills/cargo-check-crystallize.ail](file:///T:/gopia/olym/k/cogninfer/skills/cargo-check-crystallize.ail)
+- [go:/olym/k/cogninfer/skills/git-push-cosda.ail](file:///T:/gopia/olym/k/cogninfer/skills/git-push-cosda.ail)
+
+---
+
+*Reference: REF-OUTPUT | Authority: CSA | Branch: k/cogninfer/reference*
+*Last canonical update: 2026-07-30*

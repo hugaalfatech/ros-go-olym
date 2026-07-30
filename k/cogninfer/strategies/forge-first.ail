@@ -1,0 +1,131 @@
+---
+header:
+  id: GO://olym.k.cogninfer.strategies.forge-first.v1
+  intent: DECLARE_STRATEGY
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.strategy.forge_first"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Forge-First Strategy — chiến lược cho Cogninfer Actors tại ha:/ layer.
+    Forge → Patch → Push. Tuân thủ CRD canon từ caw:/.know/docs/local cloud
+    produce zones.ail.
+---
+
+# 🎯 STRATEGY — Forge-First
+
+> **Authority**: CRD canon (caw:/.know/docs/local cloud produce zones.ail)
+> **Branch**: `go:/olym/k/cogninfer/strategies/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/strategies/forge-first.ail`
+
+---
+
+## S-FF-1 — Mệnh đề
+
+> **CAW phát hiện lỗi. HACE sửa lỗi. Workspace đóng gói.**
+
+Forge Layer (`ha:/`) là Source of Truth duy nhất. Mọi Cogninfer Actor
+khi cần sửa source PHẢI quay về `ha:/engine/<domain>/<module>/`.
+
+## S-FF-2 — Loop chuẩn
+
+```text
+1. IMPORT
+   ha:/engine/*  (read-only)
+        ↓
+2. ASSEMBLE
+   caw:/minispace/{ws}
+        ↓
+3. CHECK
+   cargo check
+        ↓
+4. TEST
+   scripts/ + tests/
+        ↓
+5. ERROR?
+   ├── NO  → CRYSTALLIZE → caw artifact
+   └── YES → DIAGNOSE
+                  ↓
+            FORGE patch / fix / refactor
+                  ↓
+            ha:/engine/*
+                  ↓
+            validate
+                  ↓
+            re-run caw
+                  ↓
+            PASS → PUSH
+                  ↓
+            gh:cosda-dev/*
+            gh:hugaalfatech/ros-go-olym
+```
+
+## S-FF-3 — Khi nào forge
+
+| Trigger | Action | Actor |
+|---|---|---|
+| Build fail tại caw:/ | Diagnose → Forge patch | Fixer |
+| Test fail tại caw:/ | Diagnose → Forge patch | Fixer |
+| API breaking change | Forge refactor | Producer + CTO approve |
+| Dependency update | Forge Cargo.toml | Producer |
+| Bug report | Forge fix | Fixer |
+| Spec change | Forge spec → Forge impl | Producer (after CTO) |
+
+## S-FF-4 — Khi nào KHÔNG forge
+
+| Scenario | Why |
+|---|---|
+| Edit source từ caw:/ context | Forge SoT — caw read-only |
+| Edit source từ ws:/ context | Forge SoT — ws read-only |
+| Bypass C-X-R promotion | Cạnh tranh với constitution |
+| Push unsealed lên gh:/ | Distribution audit fail |
+
+## S-FF-5 — Output contract
+
+Forge PHẢI output:
+
+```yaml
+artifact_output:
+  - sealed_cap_path: "ha:/engine/<dom>/<mod>/c/artifact.<ext>"
+  - changelog: "ha:/engine/<dom>/<mod>/CHANGELOG.md"
+  - signed_by: "CSA / T3C-PRODUCER"
+  - extension: [".wasm", ".so", ".dll", ".ae", ".amo", ".cap"]
+  - sealed_hash: "<blake3>"
+```
+
+## S-FF-6 — Handoff to CAW
+
+Sau khi forge xong:
+
+```text
+forge_output
+   ↓
+publish to gh:cosda-dev/* (mirror)
+   ↓
+caw:/minispace/{ws-*}/ refresh path-deps
+   ↓
+cargo check → cargo test → cargo build --release
+   ↓
+crystallize artifact
+   ↓
+copy to caw:/minispace/{ws-*}/release/
+   ↓
+Publisher push to gh:cosda-dev/<workspace>-release
+```
+
+## Liên kết
+
+- [go:/olym/k/cogninfer/rules/canon-production-flow.ail](file:///T:/gopia/olym/k/cogninfer/rules/canon-production-flow.ail)
+- [caw:/.know/docs/local cloud produce zones.ail](file:///T:/caw/.know/docs/local%20cloud%20produce%20zones.ail)
+- [ha:/AGENTS.md](file:///T:/hace/AGENTS.md)
+- [ha:/ha/skills/cxr/cxr-model.ail](file:///T:/hace/.hace/skills/cxr/cxr-model.ail)
+
+---
+
+*Strategy: S-FF | Authority: CRD canon | Branch: k/cogninfer/strategies*
+*Last canonical update: 2026-07-30*

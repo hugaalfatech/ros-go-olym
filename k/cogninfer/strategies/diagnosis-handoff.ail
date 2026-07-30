@@ -1,0 +1,154 @@
+---
+header:
+  id: GO://olym.k.cogninfer.strategies.diagnosis-handoff.v1
+  intent: DECLARE_STRATEGY
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.strategy.diagnosis_handoff"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Diagnosis & Handoff Strategy — chiến lược chuẩn khi Cogninfer Actor
+    gặp lỗi tại caw:/ hoặc ws:/ layer. Diagnose → Report → Handoff về
+    đúng layer có authority.
+---
+
+# 🎯 STRATEGY — Diagnosis & Handoff
+
+> **Authority**: caw:/.know/docs/local cloud produce zones.ail (CRD canon)
+> **Branch**: `go:/olym/k/cogninfer/strategies/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/strategies/diagnosis-handoff.ail`
+
+---
+
+## S-DH-1 — Nguyên lý
+
+> **CAW phát hiện lỗi. HACE sửa lỗi. Workspace đóng gói.**
+
+Mỗi layer có **một trách nhiệm chính**:
+- `ha:/` (Forge) — Source of Truth, có quyền fix
+- `caw:/` (CAW) — Phát hiện lỗi, KHÔNG sửa
+- `ws:/` (Workspace) — Đóng gói, KHÔNG sửa engine
+
+Khi lỗi xảy ra, Cogninfer Actor PHẢI:
+
+1. Diagnose tại layer hiện tại
+2. Identify root cause layer
+3. Handoff về layer có authority
+4. KHÔNG tự ý sửa ngoài phạm vi
+
+## S-DH-2 — Decision Tree
+
+```text
+ERROR detected
+   │
+   ├── Tại caw:/minispace/{ws}/?
+   │   │
+   │   ├── cargo check / cargo test fail?
+   │   │   │
+   │   │   ├── Source code error?
+   │   │   │   └── HANDOFF → ha:/engine/<dom>/<mod>/ (Fixer)
+   │   │   │
+   │   │   ├── Dependency mismatch?
+   │   │   │   └── HANDOFF → ha:/engine/<dom>/<mod>/Cargo.toml (Fixer)
+   │   │   │
+   │   │   ├── Path-deps broken?
+   │   │   │   └── Producer fix ws-*/Cargo.toml (CAW layer)
+   │   │   │
+   │   │   └── Shared infra corrupt?
+   │   │       └── CGE rebuild .shared-{target,vendor,registry}/
+   │   │
+   │   └── cargo build fail (compile error)?
+   │       └── HANDOFF → ha:/engine/<dom>/<mod>/ (Fixer)
+   │
+   └── Tại ws:/<workspace>/?
+       │
+       ├── App-level bug?
+       │   └── Producer fix tại ws:/<workspace>/
+       │
+       ├── Engine-level bug?
+       │   └── HANDOFF → ha:/engine/<dom>/<mod>/ (Fixer)
+       │
+       ├── CAW artifact broken?
+       │   └── HANDOFF → caw:/minispace/{ws-*}/ (re-crystallize)
+       │
+       └── Integration fail?
+           └── Tester debug, Producer fix integration glue
+```
+
+## S-DH-3 — Diagnose Template
+
+```yaml
+diagnose_report:
+  layer_origin: "<caw | ws | ha>"
+  workspace: "<ws-name>"
+  command: "<cargo check | cargo test | cargo build | ...>"
+  exit_code: <int>
+  error_message: "<stderr excerpt>"
+  root_cause_layer: "<ha | caw | ws>"
+  affected_files:
+    - "<fap path>"
+  root_cause_files:
+    - "<fap path>"
+  handoff_target: "<fap path>"
+  handoff_actor: "<Fixer | Producer | CGE>"
+  timestamp: "<iso8601>"
+  actor_id: "<cogninfer agent>"
+```
+
+## S-DH-4 — Handoff Protocol
+
+```text
+Fixer / Tester tại caw:/minispace/{ws}/
+   ↓
+diagnose → xác định root cause thuộc ha:/engine/<dom>/<mod>/
+   ↓
+ghi handoff_report.md
+   ↓
+chuyển sang ha:/engine/<dom>/<mod>/
+   ↓
+Producer / Fixer tại ha:/
+   ↓
+patch / fix / refactor
+   ↓
+chạy caw:/minispace/{ws}/diagnose/handoff_replay.sh
+   ↓
+PASS → push gh:cosda-dev/* + gh:hugaalfatech/ros-go-olym
+```
+
+## S-DH-5 — Anti-pattern
+
+| Pattern | Why |
+|---|---|
+| Sửa engine source từ caw:/ context | Cross-layer modify — VIOLATION |
+| Sửa CAW cargo config từ ws:/ context | Cross-layer modify — VIOLATION |
+| Patch upstream lib trực tiếp trong ws-/Cargo.toml | Fork + PR qua ha:/ |
+| Skip diagnose → sửa lung tung | Audit fail |
+| Report không cite layer origin | R-CPF-6 violation |
+
+## S-DH-6 — Triggers
+
+| Trigger | Diagnose tại | Handoff về |
+|---|---|---|
+| `cargo check` fail | caw:/minispace/ws-*/ | ha:/engine/<dom>/<mod>/ |
+| `cargo test` fail | caw:/minispace/ws-*/ | ha:/engine/<dom>/<mod>/ |
+| `cargo build` fail | caw:/minispace/ws-*/ | ha:/engine/<dom>/<mod>/ |
+| App runtime error | ws:/<workspace>/ | ws:/<workspace>/ (own code) |
+| Engine panic | ws:/<workspace>/ | ha:/engine/<dom>/<mod>/ |
+| Artifact missing | ws:/<workspace>/ | caw:/minispace/{ws-*}/ (re-crystallize) |
+| Spec mismatch | bất kỳ | ha:/ha/specs/ (CRD) |
+
+## Liên kết
+
+- [go:/olym/k/cogninfer/strategies/forge-first.ail](file:///T:/gopia/olym/k/cogninfer/strategies/forge-first.ail)
+- [go:/olym/k/cogninfer/strategies/caw-crystallize.ail](file:///T:/gopia/olym/k/cogninfer/strategies/caw-crystallize.ail)
+- [caw:/.know/docs/local cloud produce zones.ail](file:///T:/caw/.know/docs/local%20cloud%20produce%20zones.ail)
+
+---
+
+*Strategy: S-DH | Authority: CRD canon | Branch: k/cogninfer/strategies*
+*Last canonical update: 2026-07-30*

@@ -1,0 +1,127 @@
+---
+header:
+  id: GO://olym.k.cogninfer.reference.artifact-types.v1
+  intent: DECLARE_REFERENCE
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.reference.artifact_types"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Artifact Types reference — NAP / CAP / DAP / MAP / NEP / ME / CAP-Crystallized.
+    Bảng tra cứu nhanh cho Cogninfer Actors.
+---
+
+# 📖 REFERENCE — Artifact Types
+
+> **Branch**: `go:/olym/k/cogninfer/reference/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/reference/artifact-types.ail`
+
+---
+
+## Particle Types (theo ha:/ha/rules/engine-build/partner-rrp.ail)
+
+```yaml
+particle_types:
+  NAP:
+    full_name: "Nano Artifact Particle"
+    extensions: [".yaml", ".json", ".toml"]
+    size_limit: "< 1KB"
+    role: "Smallest configuration unit"
+  MAP:
+    full_name: "Media Artifact Particle"
+    extensions: [".png", ".mp4", ".wav"]
+    role: "Media asset"
+  DAP:
+    full_name: "Decoration Artifact Particle"
+    extensions: [".css", ".theme"]
+    role: "Decoration / theming"
+  CAP:
+    full_name: "Crystallized Artifact Particle"
+    extensions: [".amo", ".wasm", ".so", ".rco", ".sio", ".ae", ".ase"]
+    role: "Sealed executable artifact"
+```
+
+## CASL Ladder (Nano Scalization)
+
+| Level | LOC | Functions | Deps | Actor | AFC ID |
+|---|---|---|---|---|---|
+| MIC | 5-20 | 1 | 0 | T3C | — |
+| NAP | 30-120 | ≤5 | ≤3 | T3C | `EE.CC.RR.FF.nXX` |
+| CAP | 150-1000 | 3-12 NAP | NAP | CTO | `EE.CC.RR.FF` |
+| NEP | 1000-5000 | 3-15 CAP | CAP | CSA | — |
+| ME | 5-20 NEP | — | NEP | CSA/Royal | — |
+| SPACE | GitHub org | — | ME | CSO | — |
+
+## Extension Table (CAP outputs)
+
+| Extension | Vai trò | Target |
+|---|---|---|
+| `.wasm` | WebAssembly | Universal runtime |
+| `.so` | Shared object (Linux) | Linux native |
+| `.dll` | Dynamic link library (Windows) | Windows native |
+| `.dylib` | Dynamic library (macOS) | macOS native |
+| `.ae` | Artifact Executable | Cosda runtime |
+| `.amo` | Actor Module Object | HA actor |
+| `.cap` | Crystallized Artifact Particle | CAW output |
+| `.rco` | Runtime Callable Object | RCO runtime |
+| `.aso` | Authority Surface Object | AVS surface |
+| `.sio` | Stream IO Object | Comet/HO |
+| `.ase` | Authority Sealed Executable | Sealed bundle |
+| `.exe` | Native executable | Platform native |
+| `.a` | Static library | Build-time |
+
+## Artifact Lifecycle
+
+```text
+MIC (5-20 LOC)
+   ↓ split
+NAP (30-120 LOC)
+   ↓ promote via C-X-R
+CAP (150-1000 LOC, sealed)
+   ↓ compose
+NEP (1000-5000 LOC)
+   ↓ compose
+ME (5-20 NEP)
+   ↓ publish
+SPACE (GitHub org)
+```
+
+## Authority Levels
+
+```yaml
+authority_levels:
+  - level: "Constitutional"
+    seals: ["c/", "constitution.ail"]
+    authority: "CSA + HI-Sodino + ACM"
+  - level: "Governance"
+    seals: ["g/", "charter", "rule"]
+    authority: "CSA + CTO"
+  - level: "Technical Contract"
+    seals: ["s/", "protocol"]
+    authority: "CTO + CSA"
+  - level: "Knowledge"
+    seals: ["k/", "blueprint"]
+    authority: "CSA + CRD"
+  - level: "Experimental"
+    seals: ["x/"]
+    authority: "T3C + profile flag"
+  - level: "Sealed Bundle"
+    seals: ["release/"]
+    authority: "CSA + CEO"
+```
+
+## Liên kết
+
+- [ha:/ha/rules/engine-build/partner-rrp.ail](file:///T:/hace/.hace/rules/engine-build/partner-rrp.ail)
+- [ha:/ha/skills/nano/stg-nano-scalization.ail](file:///T:/hace/.hace/skills/nano/stg-nano-scalization.ail)
+- [go:/olym/k/cogninfer/skills/nano-decomposition.ail](file:///T:/gopia/olym/k/cogninfer/skills/nano-decomposition.ail)
+
+---
+
+*Reference: REF-ARTIFACTS | Authority: CSA | Branch: k/cogninfer/reference*
+*Last canonical update: 2026-07-30*

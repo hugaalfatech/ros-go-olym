@@ -1,0 +1,211 @@
+---
+header:
+  id: GO://olym.k.cogninfer.rules.actor-authority-matrix.v1
+  intent: DECLARE_RULE
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.rule.actor_authority_matrix"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Authority Matrix cho 12 Cogninfer Actors — định nghĩa MAY/MAY-NOT cho mỗi
+    actor trong từng layer của local production flow. Mọi actor PHẢI load rule
+    này trước khi hành động.
+  scope: "all layers (ha:/, caw:/, ws:/, gh:/)"
+  actors_total: 12
+---
+
+# 📜 RULE — Cogninfer Actor Authority Matrix
+
+> **Authority**: GOPIA://olym.constitution.v1 (Article II: Authority)
+> **Branch**: `go:/olym/k/cogninfer/rules/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/rules/actor-authority-matrix.ail`
+
+---
+
+## R-AAM-1 — Officer Layer (Strategic — 7 actors)
+
+```yaml
+officer_layer:
+  scope: "Architecture, Spec, Canon, Research, Visual, Audit decision"
+  ownership: "DESIGN & GOVERNANCE"
+  gate_control: "Approve / Reject"
+  output: "SPEC.ail, checklist, canonical art"
+```
+
+### CSA — Chief System Architect
+
+| Action | Layer | Authority |
+|---|---|---|
+| Seal canon / blueprint | ha:/ha/caem/ | ✅ supreme |
+| Phê duyệt MAY/MAY-NOT change | caw:/minispace/.know/canon/ | ✅ supreme |
+| Override resolution order | tất cả layer | ⚠️ cần CSO approval |
+| Modify constitution | go:/olym/canon/ | ⚠️ cần ACM + HI-Sodino |
+
+### CRD — Chief Research & Development
+
+| Action | Layer | Authority |
+|---|---|---|
+| Biên soạn Canon & Glossary | ha:/ha/, go:/olym/ | ✅ owner |
+| Tạo ws-<lib>-research/ | caw:/minispace/ | ✅ (assembly-only) |
+| Tạo .know/research/*.ail | ha:/ha/, caw:/.know/ | ✅ |
+| Modify engine source | ha:/engine/ | ❌ (chuyển Producer/Fixer) |
+
+### CTO — Chief Technology Officer
+
+| Action | Layer | Authority |
+|---|---|---|
+| Approve SPEC.ail | ha:/ha/specs/ | ✅ supreme |
+| Tech stack decision | ws:/<workspace>/ | ✅ owner |
+| Spec command | ha:/ha/specs/, ws:/ | ✅ |
+
+### CVA — Chief Visual Architect
+
+| Action | Layer | Authority |
+|---|---|---|
+| AVS surface design | ha:/ha/avs/, ws://hacex-studio | ✅ owner |
+| UI / theming / branding | ws:/<workspace>/ | ✅ owner |
+| Surface contract s/ | go:/olym/s/ | ✅ (coord với CGE) |
+
+### CGE — Orchestrate & Dispatch
+
+| Action | Layer | Authority |
+|---|---|---|
+| Dispatch SIO_task | tất cả ws-* | ✅ |
+| Lifecycle của ws-* | caw:/minispace/ | ✅ owner |
+| Archive/cleanup ws-* | caw:/minispace/ | ✅ |
+| Cross-workspace coordination | ws:/, caw:/ | ✅ |
+
+### Refactor — Code Refactoring & Cleanup
+
+| Action | Layer | Authority |
+|---|---|---|
+| Refactor code internal | ha:/engine/<domain>/<module>/ | ✅ (after CTO approve) |
+| Clean dead code | ha:/engine/ | ✅ |
+| Restructure module | ha:/engine/ | ⚠️ cần CSA approval |
+
+### Reporter — Documentation & Report
+
+| Action | Layer | Authority |
+|---|---|---|
+| Generate report | tất cả layer | ✅ |
+| Update changelog | ha:/ha/, go:/olym/ | ✅ |
+| Publish audit | caw:/.know/, go:/olym/k/ | ✅ |
+
+## R-AAM-2 — Worker Layer (Operational — 5 actors)
+
+```yaml
+worker_layer:
+  scope: "Implementation, Build, Test, Fix, Publish"
+  ownership: "EXECUTE & DELIVER"
+  gate_control: "Pass / Fail checkpoint"
+  output: "Built artifacts, verified code, packaged deliverable"
+```
+
+### Producer — Artifact Executor
+
+| Action | Layer | Authority |
+|---|---|---|
+| Author code /x draft | ha:/engine/<domain>/x/ | ✅ |
+| Author Cargo.toml, src/lib.rs | ha:/engine/<module>/ | ✅ |
+| Author ws-*/Cargo.toml | caw:/minispace/ws-*/ | ✅ (path-deps only) |
+| Author ws-*/src/ | caw:/minispace/ws-*/ | ❌ FORBIDDEN (assemble only) |
+| Modify engine source đã ship | ha:/engine/ | ⚠️ cần Fixer handoff |
+
+### Builder — Build & Crystallization
+
+| Action | Layer | Authority |
+|---|---|---|
+| cargo build --release | ha:/engine/, caw:/minispace/ws-*/ | ✅ |
+| Strip + sign + pack | ha:/engine/, caw:/minispace/ | ✅ |
+| Copy to release/ | caw:/minispace/ws-*/release/ | ✅ |
+| cargo build final app | ha:/, caw:/ | ❌ (thuộc Workspace) |
+
+### Fixer — Bug Fix & Patch Engineer
+
+| Action | Layer | Authority |
+|---|---|---|
+| Diagnose cargo fail | caw:/minispace/ws-*/ | ✅ owner |
+| Patch engine source | ha:/engine/<domain>/ | ✅ (after diagnose) |
+| Tạo ws-<upstream>-fix/ | caw:/minispace/ | ✅ |
+| Modify upstream trực tiếp | ha:/engine/ | ⚠️ fork + PR only |
+
+### Auditor — Quality Verification
+
+| Action | Layer | Authority |
+|---|---|---|
+| Audit MAY/MAY-NOT | caw:/minispace/ws-*/ | ✅ |
+| Audit shared infra | caw:/minispace/.shared-*/ | ✅ |
+| Verify seal + sign | gh:/ | ✅ |
+| Audit constitution compliance | go:/olym/ | ✅ |
+| Block release | tất cả layer | ✅ (veto) |
+
+### Tester — Test & Validate
+
+| Action | Layer | Authority |
+|---|---|---|
+| cargo test --release | ha:/engine/, caw:/minispace/ws-*/ | ✅ |
+| Smoke integration | caw:/minispace/ws-*/tests/ | ✅ |
+| Invariant test | ha:/engine/<module>/r/, caw:/minispace/ws-*/tests/ | ✅ |
+| E2E test | ws:/<workspace>/ | ✅ |
+
+### Publisher — Release & Distribution
+
+| Action | Layer | Authority |
+|---|---|---|
+| Push to gh:cosda-dev/* | gh:/ | ✅ (after CSA seal) |
+| Push to gh:hugaalfatech/ros-go-olym | gh:/ | ✅ (after CGE+CSA approve) |
+| Tag release vX.Y.Z | gh:/ | ✅ |
+| Publish unsealed artifact | gh:/ | ❌ FORBIDDEN |
+
+## R-AAM-3 — Authority by Layer
+
+```yaml
+layer_authority:
+  ha:/:
+    seal_canon: ["CSA", "HI-Sodino"]
+    modify_engine_source: ["Producer", "Fixer"]
+    deploy_artifact: ["Builder"]
+  caw:/:
+    create_ws: ["CGE"]
+    modify_cargo_config: ["CSA"]
+    crystallize: ["Builder"]
+    delete_ws: ["CGE"]  # sau archive
+  ws:/:
+    import_caw_artifact: ["Producer", "Builder"]
+    customize_ui: ["CVA", "Producer"]
+    package_release: ["Builder", "Publisher"]
+  gh:/:
+    push: ["Publisher"]
+    seal_pre: ["CSA"]
+    amend_canon: ["CSA", "CSO", "ACM"]
+```
+
+## R-AAM-4 — Banned Actions (auto-fail)
+
+| Action | Actor | Why |
+|---|---|---|
+| Patch ha:/engine/ từ caw:/ context | tất cả | Cross-layer modify |
+| Create src/ trong caw:/minispace/ws-*/ | Producer | Assemble-only |
+| Duplicate vendor/target per workspace | Producer, Builder | Shared infra required |
+| Push unsealed to gh:/ | Publisher | Audit fail |
+| Modify go:/olym/c/ (constitutional) | tất cả (trừ CSA+CSO+ACM) | SEALED |
+| Modify go:/olym/s/ bởi non-canonical | tất cả (trừ CTO+CSA) | Technical contract |
+| Skip integration test | tất cả | Quality gate |
+
+## Liên kết
+
+- [go:/olym/k/cogninfer/INDEX.ail](file:///T:/gopia/olym/k/cogninfer/INDEX.ail)
+- [go:/olym/k/cogninfer/rules/canon-production-flow.ail](file:///T:/gopia/olym/k/cogninfer/rules/canon-production-flow.ail)
+- [ha:/AGENTS.md](file:///T:/hace/AGENTS.md)
+- [caw:/AGENTS.md](file:///T:/caw/AGENTS.md)
+- [ws:/AGENTS.md](file:///T:/workspaces/AGENTS.md)
+
+---
+
+*Rule: R-AAM | Authority: GOPIA://olym.constitution.v1 | Branch: k/cogninfer/rules*
+*Last canonical update: 2026-07-30*

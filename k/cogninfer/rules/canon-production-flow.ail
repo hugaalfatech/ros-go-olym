@@ -1,0 +1,151 @@
+---
+header:
+  id: GO://olym.k.cogninfer.rules.canon-production-flow.v1
+  intent: DECLARE_RULE
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.rule.canon_production_flow"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Canonical 4-Layer Local Production Flow — bắt buộc cho mọi Cogninfer Actor.
+    Forge → CAW → Workspace → Distribution.
+  scope: "all layers (ha:/, caw:/, ws:/, gh:/)"
+  supersedes: []
+---
+
+# 📜 RULE — Canon 4-Layer Local Production Flow
+
+> **Authority**: GOPIA://olym.constitution.v1 (Article V: Audit & Accountability)
+> **Branch**: `go:/olym/k/cogninfer/rules/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/rules/canon-production-flow.ail`
+
+---
+
+## R-CPF-1 — 4 Layer là BẤT BIẾN
+
+```yaml
+production_layers:
+  - id: 1
+    name: "Forge Layer (Source Forge)"
+    fap_root: "ha:/"
+    rrp_root: "t:/hace/"
+    role: "SOURCE_OF_TRUTH"
+    operations: ["forge", "build", "refine", "patch", "fix", "refactor"]
+    output: ["engine_parts", "fem", "nep", "nap", "artifacts", "reference_impl"]
+    may_create_source: true
+  - id: 2
+    name: "CAW Layer (Crystallize Assemble Warehouse)"
+    fap_root: "caw:/"
+    rrp_root: "t:/caw/"
+    role: "CRYSTALLIZE_FACTORY"
+    operations: ["import", "assemble", "integrate", "test", "verify", "crystallize"]
+    output: ["semi_engine", "secondary_product", "provider_artifact"]
+    may_create_source: false
+  - id: 3
+    name: "Workspace Layer (Final Product)"
+    fap_root: "ws:/"
+    rrp_root: "t:/workspaces/"
+    role: "PRODUCT_ASSEMBLY"
+    operations: ["import", "assemble", "customize", "integrate", "configure", "package"]
+    output: ["final_product", "application", "program", "service"]
+    may_create_source: false
+  - id: 4
+    name: "Distribution Layer (Cloud)"
+    fap_root: "gh:/"
+    rrp_root: "(github.com/cosda-dev, github.com/hugaalfatech)"
+    role: "DISTRIBUTION"
+    operations: ["push", "publish", "release", "tag"]
+    output: ["public_repo", "crate", "milky_bundle"]
+```
+
+## R-CPF-2 — Mệnh đề bất biến
+
+> **Forge builds the parts.**
+> **CAW crystallizes the engines.**
+> **Workspace assembles the products.**
+> **GitHub distributes.**
+
+KHÔNG layer nào được phép:
+- Forge tạo final application
+- CAW tạo source engine mới
+- Workspace tạo engine parts
+- Distribution chứa private runtime key
+
+## R-CPF-3 — Source of Truth Hierarchy
+
+```yaml
+source_of_truth_order:
+  1: "ha:/engine/*            # Read-only từ CAW/Workspace"
+  2: "gh:cosda-dev/*          # Mirror, fast access"
+  3: "gh:hugaalfatech/ros-go-olym # Olym canonical mirror"
+  4: "crates.io               # Upstream fallback"
+  5: "caw:/minispace/.shared-vendor/  # Local fast cache"
+```
+
+Khi có conflict, layer SAU (cao hơn trong list) được coi là authority.
+
+## R-CPF-4 — Cogninfer Actor Development Loop
+
+```text
+1. IMPORT
+   ha:/engine/*  (read-only)
+        ↓
+2. ASSEMBLE
+   caw:/minispace/{ws}
+        ↓
+3. CHECK
+   cargo check
+        ↓
+4. TEST
+   scripts/ + tests/
+        ↓
+5. ERROR?
+   ├── NO  → CRYSTALLIZE → caw artifact
+   └── YES → DIAGNOSE → FORGE (ha:/engine/*)
+                  ↓
+            patch / fix / refactor
+                  ↓
+            re-run caw
+                  ↓
+            PASS → PUSH gh:cosda-dev/* + gh:hugaalfatech/*
+```
+
+## R-CPF-5 — Cross-Layer Hand-off (BẮT BUỘC 1-CHIỀU)
+
+```yaml
+handoff_direction: "ha → caw → ws → gh"   # chỉ đi tới, KHÔNG đi lùi
+exception: "diagnose → forge (ha)"         # CHỈ diagnose mới được up-stream
+no_reverse_modify: true                    # ws không sửa caw, caw không sửa ha
+```
+
+## R-CPF-6 — Cite Source
+
+Mọi Cogninfer Actor khi report kết quả PHẢI cite layer gốc:
+
+```yaml
+report_format:
+  layer_origin: "ha:/hace/engine/rr/actor/text-ractor"
+  layer_action: "caw:/minispace/ws-hace-actors (assemble)"
+  layer_output: "caw:/minispace/ws-hace-actors/release/actor.wasm"
+  actor_id: "<agent>"
+  timestamp: "<iso8601>"
+```
+
+## Liên kết
+
+- [go:/olym/k/cogninfer/INDEX.ail](file:///T:/gopia/olym/k/cogninfer/INDEX.ail)
+- [ha:/AGENTS.md](file:///T:/hace/AGENTS.md)
+- [caw:/AGENTS.md](file:///T:/caw/AGENTS.md)
+- [ws:/AGENTS.md](file:///T:/workspaces/AGENTS.md)
+- [caw:/.know/docs/local cloud produce zones.ail](file:///T:/caw/.know/docs/local%20cloud%20produce%20zones.ail)
+- [ha:/ha/INDEX.ail](file:///T:/hace/.hace/INDEX.ail)
+
+---
+
+*Rule: R-CPF | Authority: GOPIA://olym.constitution.v1 | Branch: k/cogninfer/rules*
+*Last canonical update: 2026-07-30*
