@@ -1,0 +1,163 @@
+---
+header:
+  id: GO://olym.k.cogninfer.skills.git-push-cosda.v1
+  intent: DECLARE_SKILL
+  status: ACTIVE
+  locale: vi-85
+  version: "1.0.0"
+  authority: GOPIA://olym.constitution.v1
+  parent: "go:/olym/k/cogninfer/INDEX.ail"
+  fractal_name: "olym.cogninfer.skill.git_push_cosda"
+  hash_anchor: "{{to_be_sealed}}"
+
+metadata:
+  intent: >
+    Git Push to Cosda Skill — recipe đẩy artifact từ local lên GitHub
+    distribution. Hỗ trợ cả gh:cosda-dev/* và gh:hugaalfatech/ros-go-olym.
+    Sử dụng PAT classic trong t:/keys/github.txt.
+---
+
+# 🛠 SKILL — Git Push to Cosda
+
+> **Authority**: CRD canon + Distribution layer rule
+> **Branch**: `go:/olym/k/cogninfer/skills/`
+> **RRP**: `t:/gopia/olym/k/cogninfer/skills/git-push-cosda.ail`
+
+---
+
+## SK-GPC-1 — Setup (một lần)
+
+```powershell
+# Load PAT từ t:/keys/github.txt
+$PAT = Get-Content t:/keys/github.txt | Select-Object -Last 1
+# PAT classic for Cosda-dev: ghp_... (per t:/keys/github.txt)
+
+# Configure git credential helper (PowerShell)
+git config --global credential.helper store
+# Hoặc dùng PAT trực tiếp trong remote URL (one-time)
+```
+
+## SK-GPC-2 — Recipe: Push to gh:cosda-dev/*
+
+```powershell
+# Trong local repo (vd: ha:/engine/<dom>/<mod>/)
+Set-Location ha:/engine/<dom>/<mod>/
+
+# Verify git initialized
+if (-not (Test-Path .git)) {
+    git init
+    git checkout -b main
+    git remote add origin https://ghp_$PAT@github.com/cosda-dev/<repo>.git
+}
+
+# Stage + commit
+git add -A
+git commit -m "<conventional-commit-style>: <summary>"
+
+# Push to main
+git push -u origin main
+
+# Tag release (sau khi Builder seal)
+git tag -a v0.1.0 -m "<release notes>"
+git push origin v0.1.0
+```
+
+## SK-GPC-3 — Recipe: Push to gh:hugaalfatech/ros-go-olym
+
+```powershell
+# Sync Olym local → GitHub remote
+Set-Location t:/gopia/olym/
+
+# Verify git initialized
+if (-not (Test-Path .git)) {
+    git init
+    git checkout -b main
+    git remote add origin https://ghp_$PAT@github.com/hugaalfatech/ros-go-olym.git
+}
+
+# Stage canonical artifacts
+git add k/cogninfer/ c/ g/ s/ olym-structure-rule.ail README.md
+
+# Commit with Olym canon signature
+git commit -m "OLYM: update canonical artifacts (k/cogninfer/*, c/, g/, s/)"
+
+# Push
+git push -u origin main
+
+# Tag Olym release
+git tag -a olym-v1.2.0 -m "<release notes>"
+git push origin olym-v1.2.0
+```
+
+## SK-GPC-4 — Conventional Commit
+
+```yaml
+commit_format:
+  type:
+    - feat       # new feature
+    - fix        # bug fix
+    - docs       # documentation only
+    - refactor   # code refactor
+    - test       # add/modify test
+    - chore      # tooling, deps
+    - seal       # CSA seal artifact
+    - canon      # canonical update
+    - olym       # Olym canon update
+  scope:
+    - engine    # ha:/engine/
+    - caw       # caw:/
+    - workspace # ws:/
+    - olym      # go:/olym/
+    - skill     # skill file
+    - rule      # rule file
+  example: |
+    feat(engine): add text-ractor actor v0.1.0
+    fix(caw): resolve cargo check path-deps error
+    canon(olym): add k/cogninfer/rules v1.0.0
+    seal(engine): CSA-seal hace-actor-text v0.1.0
+```
+
+## SK-GPC-5 — PAT Rotation
+
+```yaml
+pat_management:
+  location: "t:/keys/github.txt"
+  format: |
+    PAT for Cosda: github_pat_<REDACTED — load from t:/keys/github.txt>
+    PAT classic for Cosda-dev: ghp_<REDACTED — load from t:/keys/github.txt>
+  rotation: "monthly"
+  rotation_owner: "CSA + CSO"
+  audit: "Publisher log each PAT use"
+```
+
+## SK-GPC-6 — Security
+
+| Rule | Why |
+|---|---|
+| KHÔNG commit PAT vào git | Token leak |
+| KHÔNG log PAT vào stderr | Token leak |
+| Sử dụng `credential.helper store` thay vì inline | Reduce leak surface |
+| Rotate PAT monthly | Hygiene |
+| Audit PAT use | Forensic |
+
+## SK-GPC-7 — Pre-push Checklist
+
+- [ ] Code đã pass `cargo check --release` + `cargo test --release`
+- [ ] Artifact đã được CSA seal (nếu là engine parts)
+- [ ] Manifest đã được tạo + signed
+- [ ] Commit message đúng conventional format
+- [ ] Tag version theo semver (vX.Y.Z)
+- [ ] README + CHANGELOG đã update
+- [ ] Auditor đã verify MAY/MAY-NOT compliance
+
+## Liên kết
+
+- [t:/keys/github.txt](file:///T:/keys/github.txt) (PAT storage)
+- [gh:cosda-dev](https://github.com/cosda-dev)
+- [gh:hugaalfatech/ros-go-olym](https://github.com/hugaalfatech/ros-go-olym)
+- [go:/olym/k/cogninfer/strategies/forge-first.ail](file:///T:/gopia/olym/k/cogninfer/strategies/forge-first.ail)
+
+---
+
+*Skill: SK-GPC | Authority: Distribution layer | Branch: k/cogninfer/skills*
+*Last canonical update: 2026-07-30*
